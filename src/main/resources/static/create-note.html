@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Note - MindVault AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <h2>MindVault AI</h2>
+
+        <nav>
+            <a href="dashboard.html">🏠 Dashboard</a>
+            <a href="notes.html">📝 My Notes</a>
+            <a href="#">📄 Documents</a>
+            <a href="#">🤖 AI Chat</a>
+            <a href="#">📚 Collections</a>
+            <a href="#">⚙ Settings</a>
+        </nav>
+
+    </aside>
+
+    <!-- Main Content -->
+
+    <main class="notes-content">
+
+        <h1>Create New Note</h1>
+
+        <div class="create-note-form">
+
+            <label>Title</label>
+            <input type="text" placeholder="Enter note title">
+
+            <label>Category</label>
+
+            <select>
+
+                <option>Java</option>
+                <option>Spring Boot</option>
+                <option>Machine Learning</option>
+                <option>DSA</option>
+                <option>Personal</option>
+
+            </select>
+
+            <label>Tags</label>
+            <input type="text" placeholder="Example: Spring Boot, JWT">
+
+            <label>Content</label>
+
+            <textarea
+                    rows="12"
+                    placeholder="Write your notes here...">
+            </textarea>
+
+            <div class="form-buttons">
+
+                <button class="save-btn">
+                    Save Note
+                </button>
+
+                <a href="notes.html">
+                    <button type="button" class="cancel-btn">
+                        Cancel
+                    </button>
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>
