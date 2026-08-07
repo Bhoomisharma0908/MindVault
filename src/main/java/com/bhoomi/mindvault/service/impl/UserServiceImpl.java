@@ -1,5 +1,9 @@
 package com.bhoomi.mindvault.service.impl;
 
+import com.bhoomi.mindvault.dto.LoginResponseDTO;
+import com.bhoomi.mindvault.jwt.JwtUtil;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.bhoomi.mindvault.dto.LoginRequestDTO;
 import com.bhoomi.mindvault.dto.UserRequestDTO;
 import com.bhoomi.mindvault.dto.UserResponseDTO;
@@ -17,6 +21,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @Override
     public UserResponseDTO registerUser(UserRequestDTO userRequestDTO) {
 
@@ -29,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
         user.setFullName(userRequestDTO.getFullName());
         user.setEmail(userRequestDTO.getEmail());
-        user.setPassword(userRequestDTO.getPassword());
+        user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
 
         User savedUser = userRepository.save(user);
 
@@ -41,19 +51,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO loginUser(LoginRequestDTO loginRequestDTO) {
+    public LoginResponseDTO loginUser(LoginRequestDTO loginRequestDTO) {
 
         User user = userRepository.findByEmail(loginRequestDTO.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found."));
 
-        if (!user.getPassword().equals(loginRequestDTO.getPassword())) {
+        if (!passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPassword())) {
             throw new InvalidPasswordException("Invalid password.");
         }
 
-        return new UserResponseDTO(
-                user.getId(),
-                user.getFullName(),
-                user.getEmail()
-        );
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        return new LoginResponseDTO(token);
     }
+
 }

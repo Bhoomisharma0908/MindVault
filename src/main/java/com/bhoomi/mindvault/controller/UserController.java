@@ -1,5 +1,6 @@
 package com.bhoomi.mindvault.controller;
 import jakarta.validation.Valid;
+import com.bhoomi.mindvault.dto.LoginResponseDTO;
 
 import com.bhoomi.mindvault.dto.LoginRequestDTO;
 import com.bhoomi.mindvault.dto.UserRequestDTO;
@@ -21,7 +22,7 @@ public class UserController {
         return userService.registerUser(userRequestDTO);
     }
     @PostMapping("/login")
-    public UserResponseDTO loginUser(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+    public LoginResponseDTO loginUser(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
         return userService.loginUser(loginRequestDTO);
     }
 }
