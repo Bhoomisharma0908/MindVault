@@ -172,4 +172,32 @@ public class CollectionServiceImpl implements CollectionService {
 
         collectionRepository.delete(collection);
     }
+
+    // Search collections
+    @Override
+    public List<CollectionResponseDTO> searchCollections(
+            String keyword) {
+
+        String email = getLoggedInUserEmail();
+
+        List<Collection> collections =
+                collectionRepository
+                        .findByUserEmailAndNameContainingIgnoreCase(
+                                email,
+                                keyword);
+
+        List<CollectionResponseDTO> response =
+                new ArrayList<>();
+
+        for (Collection collection : collections) {
+
+            response.add(new CollectionResponseDTO(
+                    collection.getId(),
+                    collection.getName(),
+                    collection.getDescription()
+            ));
+        }
+
+        return response;
+    }
 }

@@ -19,4 +19,7 @@ public interface CollectionService {
             CollectionRequestDTO requestDTO);
 
     void deleteCollection(Long id);
+
+    List<CollectionResponseDTO> searchCollections(
+            String keyword);
 }
