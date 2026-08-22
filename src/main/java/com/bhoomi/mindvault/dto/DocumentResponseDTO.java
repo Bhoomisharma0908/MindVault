@@ -6,6 +6,7 @@ public class DocumentResponseDTO {
     private String fileName;
     private String fileType;
     private Long fileSize;
+    private Long collectionId;
 
     public DocumentResponseDTO() {
     }
@@ -14,12 +15,14 @@ public class DocumentResponseDTO {
             Long id,
             String fileName,
             String fileType,
-            Long fileSize) {
+            Long fileSize,
+            Long collectionId) {
 
         this.id = id;
         this.fileName = fileName;
         this.fileType = fileType;
         this.fileSize = fileSize;
+        this.collectionId = collectionId;
     }
 
     public Long getId() {
@@ -52,5 +55,13 @@ public class DocumentResponseDTO {
 
     public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
+    }
+
+    public Long getCollectionId() {
+        return collectionId;
+    }
+
+    public void setCollectionId(Long collectionId) {
+        this.collectionId = collectionId;
     }
 }

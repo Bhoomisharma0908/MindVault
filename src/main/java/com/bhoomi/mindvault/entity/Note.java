@@ -1,3 +1,4 @@
+
 package com.bhoomi.mindvault.entity;
 
 import jakarta.persistence.*;
@@ -20,22 +21,18 @@ public class Note {
 
     private String tags;
 
+    // Note belongs to a User
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // Note can belong to a Collection
+    @ManyToOne
+    @JoinColumn(name = "collection_id")
+    private Collection collection;
+
     // Default constructor
     public Note() {
-    }
-
-    // Constructor
-    public Note(Long id, String title, String content, String category, String tags, User user) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.category = category;
-        this.tags = tags;
-        this.user = user;
     }
 
     // Getters and Setters
@@ -86,5 +83,13 @@ public class Note {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Collection getCollection() {
+        return collection;
+    }
+
+    public void setCollection(Collection collection) {
+        this.collection = collection;
     }
 }

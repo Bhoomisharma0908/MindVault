@@ -3,6 +3,7 @@ package com.bhoomi.mindvault.service.impl;
 import com.bhoomi.mindvault.dto.DocumentResponseDTO;
 import com.bhoomi.mindvault.entity.Document;
 import com.bhoomi.mindvault.entity.User;
+import com.bhoomi.mindvault.repository.CollectionRepository;
 import com.bhoomi.mindvault.repository.DocumentRepository;
 import com.bhoomi.mindvault.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CollectionRepository collectionRepository;
 
     private final String uploadDirectory = "uploads/";
 
@@ -86,12 +90,7 @@ public class DocumentServiceImpl implements DocumentService {
             Document savedDocument =
                     documentRepository.save(document);
 
-            return new DocumentResponseDTO(
-                    savedDocument.getId(),
-                    savedDocument.getFileName(),
-                    savedDocument.getFileType(),
-                    savedDocument.getFileSize()
-            );
+            return convertToResponse(savedDocument);
 
         } catch (IOException e) {
 
@@ -116,12 +115,7 @@ public class DocumentServiceImpl implements DocumentService {
 
         for (Document document : documents) {
 
-            response.add(new DocumentResponseDTO(
-                    document.getId(),
-                    document.getFileName(),
-                    document.getFileType(),
-                    document.getFileSize()
-            ));
+            response.add(convertToResponse(document));
         }
 
         return response;
@@ -145,12 +139,7 @@ public class DocumentServiceImpl implements DocumentService {
                     "You are not allowed to access this document");
         }
 
-        return new DocumentResponseDTO(
-                document.getId(),
-                document.getFileName(),
-                document.getFileType(),
-                document.getFileSize()
-        );
+        return convertToResponse(document);
     }
 
     // Delete document
@@ -208,12 +197,7 @@ public class DocumentServiceImpl implements DocumentService {
 
         for (Document document : documents) {
 
-            response.add(new DocumentResponseDTO(
-                    document.getId(),
-                    document.getFileName(),
-                    document.getFileType(),
-                    document.getFileSize()
-            ));
+            response.add(convertToResponse(document));
         }
 
         return response;
@@ -251,5 +235,25 @@ public class DocumentServiceImpl implements DocumentService {
                     e
             );
         }
+    }
+
+    // Convert Document Entity to Response DTO
+    private DocumentResponseDTO convertToResponse(
+            Document document) {
+
+        Long collectionId = null;
+
+        if (document.getCollection() != null) {
+            collectionId =
+                    document.getCollection().getId();
+        }
+
+        return new DocumentResponseDTO(
+                document.getId(),
+                document.getFileName(),
+                document.getFileType(),
+                document.getFileSize(),
+                collectionId
+        );
     }
 }

@@ -3,7 +3,6 @@ package com.bhoomi.mindvault.controller;
 import com.bhoomi.mindvault.dto.NoteRequestDTO;
 import com.bhoomi.mindvault.dto.NoteResponseDTO;
 import com.bhoomi.mindvault.service.impl.NoteService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,41 +18,16 @@ public class NoteController {
     // Create Note
     @PostMapping
     public NoteResponseDTO createNote(
-            @Valid @RequestBody NoteRequestDTO noteRequestDTO) {
+            @RequestBody NoteRequestDTO requestDTO) {
 
-        return noteService.createNote(noteRequestDTO);
+        return noteService.createNote(requestDTO);
     }
 
-    // Get All Notes
+    // Get all Notes
     @GetMapping
     public List<NoteResponseDTO> getAllNotes() {
 
         return noteService.getAllNotes();
-    }
-
-    // Get Note By ID
-    @GetMapping("/{id}")
-    public NoteResponseDTO getNoteById(@PathVariable Long id) {
-
-        return noteService.getNoteById(id);
-    }
-
-    // Update Note
-    @PutMapping("/{id}")
-    public NoteResponseDTO updateNote(
-            @PathVariable Long id,
-            @Valid @RequestBody NoteRequestDTO noteRequestDTO) {
-
-        return noteService.updateNote(id, noteRequestDTO);
-    }
-
-    // Delete Note
-    @DeleteMapping("/{id}")
-    public String deleteNote(@PathVariable Long id) {
-
-        noteService.deleteNote(id);
-
-        return "Note deleted successfully";
     }
 
     // Search Notes
@@ -62,5 +36,43 @@ public class NoteController {
             @RequestParam String keyword) {
 
         return noteService.searchNotes(keyword);
+    }
+
+    // Get notes belonging to a collection
+    @GetMapping("/collection/{collectionId}")
+    public List<NoteResponseDTO> getNotesByCollection(
+            @PathVariable Long collectionId) {
+
+        return noteService.getNotesByCollection(collectionId);
+    }
+
+    // Get Note by ID
+    @GetMapping("/{id}")
+    public NoteResponseDTO getNoteById(
+            @PathVariable Long id) {
+
+        return noteService.getNoteById(id);
+    }
+
+    // Update Note
+    @PutMapping("/{id}")
+    public NoteResponseDTO updateNote(
+            @PathVariable Long id,
+            @RequestBody NoteRequestDTO requestDTO) {
+
+        return noteService.updateNote(
+                id,
+                requestDTO
+        );
+    }
+
+    // Delete Note
+    @DeleteMapping("/{id}")
+    public String deleteNote(
+            @PathVariable Long id) {
+
+        noteService.deleteNote(id);
+
+        return "Note deleted successfully";
     }
 }

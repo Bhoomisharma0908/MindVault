@@ -1,3 +1,4 @@
+
 package com.bhoomi.mindvault.controller;
 
 import com.bhoomi.mindvault.dto.DocumentResponseDTO;
@@ -7,7 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+        import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,10 +20,7 @@ public class DocumentController {
     private DocumentService documentService;
 
     // Upload Document
-    @PostMapping(
-            value = "/upload",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
+    @PostMapping("/upload")
     public DocumentResponseDTO uploadDocument(
             @RequestParam("file") MultipartFile file) {
 
@@ -57,17 +55,15 @@ public class DocumentController {
     public ResponseEntity<byte[]> downloadDocument(
             @PathVariable Long id) {
 
-        byte[] file = documentService.downloadDocument(id);
-
-        DocumentResponseDTO document =
-                documentService.getDocumentById(id);
+        byte[] file =
+                documentService.downloadDocument(id);
 
         return ResponseEntity.ok()
                 .header(
                         HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" +
-                                document.getFileName() + "\""
+                        "attachment"
                 )
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(file);
     }
 

@@ -39,14 +39,6 @@ public class CollectionServiceImpl implements CollectionService {
 
         String email = getLoggedInUserEmail();
 
-        // Check duplicate collection name
-        if (collectionRepository.existsByNameAndUserEmail(
-                requestDTO.getName(), email)) {
-
-            throw new RuntimeException(
-                    "Collection with this name already exists");
-        }
-
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
@@ -60,14 +52,10 @@ public class CollectionServiceImpl implements CollectionService {
         Collection savedCollection =
                 collectionRepository.save(collection);
 
-        return new CollectionResponseDTO(
-                savedCollection.getId(),
-                savedCollection.getName(),
-                savedCollection.getDescription()
-        );
+        return convertToResponse(savedCollection);
     }
 
-    // Get all collections
+    // Get all collections of logged-in user
     @Override
     public List<CollectionResponseDTO> getAllCollections() {
 
@@ -81,11 +69,7 @@ public class CollectionServiceImpl implements CollectionService {
 
         for (Collection collection : collections) {
 
-            response.add(new CollectionResponseDTO(
-                    collection.getId(),
-                    collection.getName(),
-                    collection.getDescription()
-            ));
+            response.add(convertToResponse(collection));
         }
 
         return response;
@@ -110,14 +94,10 @@ public class CollectionServiceImpl implements CollectionService {
                     "You are not allowed to access this collection");
         }
 
-        return new CollectionResponseDTO(
-                collection.getId(),
-                collection.getName(),
-                collection.getDescription()
-        );
+        return convertToResponse(collection);
     }
 
-    // Update collection
+    // Update Collection
     @Override
     public CollectionResponseDTO updateCollection(
             Long id,
@@ -144,14 +124,10 @@ public class CollectionServiceImpl implements CollectionService {
         Collection updatedCollection =
                 collectionRepository.save(collection);
 
-        return new CollectionResponseDTO(
-                updatedCollection.getId(),
-                updatedCollection.getName(),
-                updatedCollection.getDescription()
-        );
+        return convertToResponse(updatedCollection);
     }
 
-    // Delete collection
+    // Delete Collection
     @Override
     public void deleteCollection(Long id) {
 
@@ -173,7 +149,7 @@ public class CollectionServiceImpl implements CollectionService {
         collectionRepository.delete(collection);
     }
 
-    // Search collections
+    // Search Collections
     @Override
     public List<CollectionResponseDTO> searchCollections(
             String keyword) {
@@ -184,20 +160,28 @@ public class CollectionServiceImpl implements CollectionService {
                 collectionRepository
                         .findByUserEmailAndNameContainingIgnoreCase(
                                 email,
-                                keyword);
+                                keyword
+                        );
 
         List<CollectionResponseDTO> response =
                 new ArrayList<>();
 
         for (Collection collection : collections) {
 
-            response.add(new CollectionResponseDTO(
-                    collection.getId(),
-                    collection.getName(),
-                    collection.getDescription()
-            ));
+            response.add(convertToResponse(collection));
         }
 
         return response;
+    }
+
+    // Convert Entity → Response DTO
+    private CollectionResponseDTO convertToResponse(
+            Collection collection) {
+
+        return new CollectionResponseDTO(
+                collection.getId(),
+                collection.getName(),
+                collection.getDescription()
+        );
     }
 }

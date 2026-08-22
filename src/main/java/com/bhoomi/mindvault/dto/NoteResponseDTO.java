@@ -7,16 +7,25 @@ public class NoteResponseDTO {
     private String content;
     private String category;
     private String tags;
+    private Long collectionId;
 
     public NoteResponseDTO() {
     }
 
-    public NoteResponseDTO(Long id, String title, String content, String category, String tags) {
+    public NoteResponseDTO(
+            Long id,
+            String title,
+            String content,
+            String category,
+            String tags,
+            Long collectionId) {
+
         this.id = id;
         this.title = title;
         this.content = content;
         this.category = category;
         this.tags = tags;
+        this.collectionId = collectionId;
     }
 
     public Long getId() {
@@ -57,5 +66,13 @@ public class NoteResponseDTO {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public Long getCollectionId() {
+        return collectionId;
+    }
+
+    public void setCollectionId(Long collectionId) {
+        this.collectionId = collectionId;
     }
 }

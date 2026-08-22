@@ -13,40 +13,24 @@ public class Document {
     @Column(nullable = false)
     private String fileName;
 
-    @Column(nullable = false)
     private String fileType;
 
     private Long fileSize;
 
-    @Column(nullable = false)
     private String filePath;
 
+    // Document belongs to a User
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Default constructor
+    // Document can belong to a Collection
+    @ManyToOne
+    @JoinColumn(name = "collection_id")
+    private Collection collection;
+
     public Document() {
     }
-
-    // Constructor
-    public Document(
-            Long id,
-            String fileName,
-            String fileType,
-            Long fileSize,
-            String filePath,
-            User user) {
-
-        this.id = id;
-        this.fileName = fileName;
-        this.fileType = fileType;
-        this.fileSize = fileSize;
-        this.filePath = filePath;
-        this.user = user;
-    }
-
-    // Getters and Setters
 
     public Long getId() {
         return id;
@@ -94,5 +78,13 @@ public class Document {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Collection getCollection() {
+        return collection;
+    }
+
+    public void setCollection(Collection collection) {
+        this.collection = collection;
     }
 }

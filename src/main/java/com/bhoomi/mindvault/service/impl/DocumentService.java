@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface DocumentService {
 
-    DocumentResponseDTO uploadDocument(MultipartFile file);
+    DocumentResponseDTO uploadDocument(
+            MultipartFile file,
+            Long collectionId
+    );
 
     List<DocumentResponseDTO> getAllDocuments();
 

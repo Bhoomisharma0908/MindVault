@@ -7,15 +7,20 @@ import java.util.List;
 
 public interface NoteService {
 
-    NoteResponseDTO createNote(NoteRequestDTO noteRequestDTO);
+    NoteResponseDTO createNote(NoteRequestDTO requestDTO);
 
     List<NoteResponseDTO> getAllNotes();
 
     NoteResponseDTO getNoteById(Long id);
 
-    NoteResponseDTO updateNote(Long id, NoteRequestDTO noteRequestDTO);
+    NoteResponseDTO updateNote(
+            Long id,
+            NoteRequestDTO requestDTO);
 
     void deleteNote(Long id);
 
     List<NoteResponseDTO> searchNotes(String keyword);
+
+    List<NoteResponseDTO> getNotesByCollection(
+            Long collectionId);
 }
