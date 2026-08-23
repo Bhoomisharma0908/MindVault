@@ -1,6 +1,7 @@
 package com.bhoomi.mindvault.service.impl;
 
 import com.bhoomi.mindvault.dto.DocumentResponseDTO;
+import com.bhoomi.mindvault.entity.Collection;
 import com.bhoomi.mindvault.entity.Document;
 import com.bhoomi.mindvault.entity.User;
 import com.bhoomi.mindvault.repository.CollectionRepository;
@@ -45,7 +46,9 @@ public class DocumentServiceImpl implements DocumentService {
 
     // Upload Document
     @Override
-    public DocumentResponseDTO uploadDocument(MultipartFile file) {
+    public DocumentResponseDTO uploadDocument(
+            MultipartFile file,
+            Long collectionId) {
 
         if (file == null || file.isEmpty()) {
             throw new RuntimeException("File cannot be empty");
@@ -86,6 +89,26 @@ public class DocumentServiceImpl implements DocumentService {
             document.setFileSize(file.getSize());
             document.setFilePath(filePath.toString());
             document.setUser(user);
+
+            // Assign collection if collectionId is provided
+            if (collectionId != null) {
+
+                Collection collection =
+                        collectionRepository.findById(collectionId)
+                                .orElseThrow(() ->
+                                        new RuntimeException(
+                                                "Collection not found"));
+
+                // Security check
+                if (!collection.getUser().getEmail()
+                        .equals(email)) {
+
+                    throw new RuntimeException(
+                            "You are not allowed to use this collection");
+                }
+
+                document.setCollection(collection);
+            }
 
             Document savedDocument =
                     documentRepository.save(document);
@@ -237,7 +260,7 @@ public class DocumentServiceImpl implements DocumentService {
         }
     }
 
-    // Convert Document Entity to Response DTO
+    // Convert Entity → Response DTO
     private DocumentResponseDTO convertToResponse(
             Document document) {
 

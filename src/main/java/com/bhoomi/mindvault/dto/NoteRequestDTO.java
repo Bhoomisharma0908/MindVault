@@ -1,28 +1,22 @@
 package com.bhoomi.mindvault.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class NoteRequestDTO {
 
+    @NotBlank(message = "Title is required")
     private String title;
+
+    @NotBlank(message = "Content is required")
     private String content;
+
     private String category;
+
     private String tags;
+
     private Long collectionId;
 
     public NoteRequestDTO() {
-    }
-
-    public NoteRequestDTO(
-            String title,
-            String content,
-            String category,
-            String tags,
-            Long collectionId) {
-
-        this.title = title;
-        this.content = content;
-        this.category = category;
-        this.tags = tags;
-        this.collectionId = collectionId;
     }
 
     public String getTitle() {

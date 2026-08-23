@@ -10,20 +10,17 @@ public class UserRequestDTO {
     private String fullName;
 
     @NotBlank(message = "Email is required")
-    @Email(message = "Enter a valid email")
+    @Email(message = "Invalid email")
     private String email;
 
     @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters")
+    @Size(
+            min = 6,
+            message = "Password must contain at least 6 characters"
+    )
     private String password;
 
     public UserRequestDTO() {
-    }
-
-    public UserRequestDTO(String fullName, String email, String password) {
-        this.fullName = fullName;
-        this.email = email;
-        this.password = password;
     }
 
     public String getFullName() {

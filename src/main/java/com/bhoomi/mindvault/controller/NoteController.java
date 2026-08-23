@@ -3,6 +3,7 @@ package com.bhoomi.mindvault.controller;
 import com.bhoomi.mindvault.dto.NoteRequestDTO;
 import com.bhoomi.mindvault.dto.NoteResponseDTO;
 import com.bhoomi.mindvault.service.impl.NoteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ public class NoteController {
     // Create Note
     @PostMapping
     public NoteResponseDTO createNote(
-            @RequestBody NoteRequestDTO requestDTO) {
+            @Valid @RequestBody NoteRequestDTO requestDTO) {
 
         return noteService.createNote(requestDTO);
     }
@@ -38,7 +39,7 @@ public class NoteController {
         return noteService.searchNotes(keyword);
     }
 
-    // Get notes belonging to a collection
+    // Get Notes by Collection
     @GetMapping("/collection/{collectionId}")
     public List<NoteResponseDTO> getNotesByCollection(
             @PathVariable Long collectionId) {
@@ -58,12 +59,9 @@ public class NoteController {
     @PutMapping("/{id}")
     public NoteResponseDTO updateNote(
             @PathVariable Long id,
-            @RequestBody NoteRequestDTO requestDTO) {
+            @Valid @RequestBody NoteRequestDTO requestDTO) {
 
-        return noteService.updateNote(
-                id,
-                requestDTO
-        );
+        return noteService.updateNote(id, requestDTO);
     }
 
     // Delete Note
