@@ -2,210 +2,155 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Dashboard - MindVault AI</title>
 
     <link rel="stylesheet" href="style.css">
-
 </head>
-
 
 <body>
 
+<nav class="dashboard-nav">
 
-<div class="dashboard">
+    <div class="logo">
+        🧠 MindVault <span>AI</span>
+    </div>
 
+    <button id="logoutBtn">
+        Logout
+    </button>
 
-    <!-- Sidebar -->
-
-    <aside class="sidebar">
-
-
-        <h2>
-            MindVault AI
-        </h2>
-
-
-        <nav>
-
-            <a href="#">
-                🏠 Dashboard
-            </a>
-
-            <a href="notes.html">
-                📝 My Notes
-            </a>
-
-            <a href="documents.html">
-                📄 Documents
-            </a>
-
-            <a href="ai-chat.html">
-                🤖 AI Chat
-            </a>
-
-            <a href="collections.html">
-                📚 Collections
-            </a>
-
-            <a href="settings.html">
-                ⚙ Settings
-            </a>
+</nav>
 
 
-        </nav>
+<main class="dashboard">
+
+    <h1>Welcome to MindVault 👋</h1>
+
+    <p class="dashboard-subtitle">
+        Manage your knowledge, notes and documents in one place.
+    </p>
 
 
-        <button class="logout-btn">
-            Logout
-        </button>
+    <div class="dashboard-grid">
 
+        <!-- NOTES -->
 
-    </aside>
+        <div class="dashboard-card">
 
-
-
-
-
-    <!-- Main Content -->
-
-
-    <main class="dashboard-content">
-
-
-        <h1>
-            Welcome back 👋
-        </h1>
-
-
-        <p>
-            Manage your knowledge with AI
-        </p>
-
-
-
-        <!-- Stats Cards -->
-
-
-        <div class="dashboard-cards">
-
-
-            <div class="dashboard-card">
-
-                <h2>
-                    120
-                </h2>
-
-                <p>
-                    Notes
-                </p>
-
+            <div class="card-icon">
+                📝
             </div>
 
+            <h2>Notes</h2>
 
+            <p>
+                Create, edit, search and organize your personal notes.
+            </p>
 
-            <div class="dashboard-card">
-
-                <h2>
-                    25
-                </h2>
-
-                <p>
-                    Documents
-                </p>
-
-            </div>
-
-
-
-            <div class="dashboard-card">
-
-                <h2>
-                    340
-                </h2>
-
-                <p>
-                    AI Queries
-                </p>
-
-            </div>
-
+            <button onclick="openNotes()">
+                Open Notes
+            </button>
 
         </div>
 
 
+        <!-- COLLECTIONS -->
 
+        <div class="dashboard-card">
 
-
-        <!-- Recent Notes -->
-
-
-        <section class="recent-section">
-
-
-            <h2>
-                Recent Notes
-            </h2>
-
-
-            <div class="note">
-
-                Spring Boot JWT Authentication
-
+            <div class="card-icon">
+                📚
             </div>
 
-
-            <div class="note">
-
-                Machine Learning Algorithms
-
-            </div>
-
-
-            <div class="note">
-
-                DSA Revision Notes
-
-            </div>
-
-
-        </section>
-
-
-
-
-
-
-        <!-- AI Suggestion -->
-
-
-        <section class="ai-suggestion">
-
-
-            <h2>
-                AI Recommendation
-            </h2>
-
+            <h2>Collections</h2>
 
             <p>
-                You studied Spring Security recently.
-                Consider revising JWT authentication today.
+                Organize your notes into collections.
             </p>
 
+            <button onclick="openCollections()">
+                Open Collections
+            </button>
 
-        </section>
+        </div>
 
 
+        <!-- DOCUMENTS -->
 
-    </main>
+        <div class="dashboard-card">
+
+            <div class="card-icon">
+                📄
+            </div>
+
+            <h2>Documents</h2>
+
+            <p>
+                Upload, search, download and manage your documents.
+            </p>
+
+            <button onclick="openDocuments()">
+                Open Documents
+            </button>
+
+        </div>
 
 
-</div>
+        <!-- AI -->
 
+        <div class="dashboard-card">
+
+            <div class="card-icon">
+                🤖
+            </div>
+
+            <h2>AI Assistant</h2>
+
+            <p>
+                Your intelligent personal knowledge assistant.
+            </p>
+
+            <button onclick="alert('AI Assistant will be added next.')">
+                Open AI Assistant
+            </button>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script>
+
+    function openNotes() {
+        alert("Notes page will be connected next.");
+    }
+
+    function openCollections() {
+        alert("Collections page will be connected next.");
+    }
+
+    function openDocuments() {
+        alert("Documents page will be connected next.");
+    }
+
+
+    document
+        .getElementById("logoutBtn")
+        .addEventListener("click", function () {
+
+            localStorage.removeItem("jwtToken");
+
+            window.location.href = "/";
+
+        });
+
+</script>
 
 </body>
 
-</html> //done
+</html>

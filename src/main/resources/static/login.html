@@ -4,11 +4,13 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Login - MindVault AI</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css">
 
 </head>
 
@@ -22,57 +24,71 @@
     <div class="auth-card">
 
 
-        <h1>
-            Welcome Back
-        </h1>
+        <h1>Welcome Back</h1>
 
 
         <p>
-            Login to access your AI knowledge vault
+            Login to your MindVault AI account
         </p>
 
 
-
-        <form>
+        <form id="loginForm">
 
 
             <input
                     type="email"
-                    placeholder="Enter your email">
+                    id="loginEmail"
+                    placeholder="Enter your email"
+                    required
+            >
 
 
             <input
                     type="password"
-                    placeholder="Enter your password">
+                    id="loginPassword"
+                    placeholder="Enter your password"
+                    required
+            >
 
 
-
-            <a href="dashboard.html">
-                <button type="button">
-                    Login
-                </button>
-            </a>
+            <button type="submit">
+                Login
+            </button>
 
 
         </form>
 
 
+        <p id="loginMessage"></p>
+
 
         <p class="auth-link">
 
             Don't have an account?
-            <a href="register.html">
+
+            <a href="/register.html">
                 Create Account
             </a>
 
         </p>
 
 
+        <p class="auth-link">
+
+            <a href="/index.html">
+                ← Back to Home
+            </a>
+
+        </p>
+
 
     </div>
 
 
 </div>
+
+
+<script src="/script.js"></script>
 
 
 </body>

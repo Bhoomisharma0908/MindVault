@@ -3,762 +3,484 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="MindVault AI - Your personal AI-powered knowledge management system">
 
     <title>MindVault AI</title>
 
-    <link rel="stylesheet" href="style.css">
+    <!-- IMPORTANT:
+         style.css is directly inside static folder -->
+    <link rel="stylesheet" href="/style.css">
 </head>
-
 
 <body>
 
+<!-- =====================================================
+     NAVBAR
+     ===================================================== -->
 
-<!-- Navbar -->
+<header class="navbar">
 
-<nav class="navbar">
+    <a href="/" class="logo">
+        <div class="logo-icon">M</div>
+        <span>MindVault</span> AI
+    </a>
 
-    <div class="logo">
-        MindVault AI
-    </div>
+    <nav>
+        <ul class="nav-links">
 
+            <li>
+                <a href="#features">Features</a>
+            </li>
 
-    <div class="nav-links">
+            <li>
+                <a href="#about">About</a>
+            </li>
 
-        <a href="#">Home</a>
-        <a href="#">Features</a>
-        <a href="#">How it Works</a>
-        <a href="#">About</a>
+            <li>
+                <a href="#contact">Contact</a>
+            </li>
 
-    </div>
+            <li>
+                <a href="/login.html">Login</a>
+            </li>
 
+            <li>
+                <a href="/register.html"
+                   class="btn btn-primary">
+                    Get Started
+                </a>
+            </li>
 
-    <div class="nav-buttons">
+        </ul>
+    </nav>
 
-        <button class="login-btn">
-            Login
-        </button>
-
-        <a href="login.html">
-            <button class="signup-btn">
-                Get Started
-            </button>
-        </a>
-
-    </div>
-
-
-</nav>
-
-
-
-<!-- Hero Section -->
-
-
-<section class="hero">
+</header>
 
 
-    <div class="hero-content">
+<!-- =====================================================
+     HERO SECTION
+     ===================================================== -->
+
+<main>
+
+    <section class="hero">
+
+        <div class="container">
+
+            <div class="hero-content">
+
+                <div class="badge">
+                    ✨ AI Powered Knowledge Management
+                </div>
+
+                <h1>
+                    Your Knowledge.
+                    <span>Organized.</span>
+                </h1>
+
+                <p>
+                    MindVault AI helps you capture, organize and manage
+                    your personal knowledge, notes and documents —
+                    all in one intelligent workspace.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a href="/register.html"
+                       class="btn btn-primary">
+                        Get Started →
+                    </a>
+
+                    <a href="/login.html"
+                       class="btn btn-secondary">
+                        Sign In
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
 
 
-        <h1>
-            Your Second Brain,
-            <span>Powered by AI</span>
-        </h1>
+    <!-- =====================================================
+         FEATURES
+         ===================================================== -->
 
+    <section class="section"
+             id="features">
+
+        <div class="container">
+
+            <div class="section-header">
+
+                <div class="badge">
+                    Powerful Features
+                </div>
+
+                <h2>
+                    Everything you need to
+                    <span class="text-green">
+                    think better.
+                </span>
+                </h2>
+
+                <p>
+                    A simple workspace designed to help you
+                    organize your digital knowledge efficiently.
+                </p>
+
+            </div>
+
+
+            <div class="features-grid">
+
+
+                <!-- AI ASSISTANT -->
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        🤖
+                    </div>
+
+                    <h3>
+                        AI Assistant
+                    </h3>
+
+                    <p>
+                        Get intelligent assistance while searching,
+                        understanding and organizing your knowledge.
+                    </p>
+
+                </div>
+
+
+                <!-- KNOWLEDGE VAULT -->
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        🧠
+                    </div>
+
+                    <h3>
+                        Knowledge Vault
+                    </h3>
+
+                    <p>
+                        Store your important ideas, notes and
+                        information in one organized place.
+                    </p>
+
+                </div>
+
+
+                <!-- NOTES -->
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        📝
+                    </div>
+
+                    <h3>
+                        Smart Notes
+                    </h3>
+
+                    <p>
+                        Create, update, search and manage your
+                        personal notes with ease.
+                    </p>
+
+                </div>
+
+
+                <!-- DOCUMENTS -->
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        📄
+                    </div>
+
+                    <h3>
+                        Documents
+                    </h3>
+
+                    <p>
+                        Upload and manage important documents
+                        directly inside your knowledge workspace.
+                    </p>
+
+                </div>
+
+
+                <!-- COLLECTIONS -->
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        📚
+                    </div>
+
+                    <h3>
+                        Collections
+                    </h3>
+
+                    <p>
+                        Group related notes and information into
+                        collections for better organization.
+                    </p>
+
+                </div>
+
+
+                <!-- SEARCH -->
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        🔍
+                    </div>
+
+                    <h3>
+                        Smart Search
+                    </h3>
+
+                    <p>
+                        Quickly find the notes and documents you
+                        need without searching through everything manually.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ABOUT
+         ===================================================== -->
+
+    <section class="section"
+             id="about">
+
+        <div class="container">
+
+            <div class="content-grid">
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <h2>
+                            Your Personal Knowledge Vault
+                        </h2>
+                    </div>
+
+                    <p class="text-muted">
+                        MindVault AI provides a centralized workspace
+                        where you can store your notes, documents and
+                        collections.
+                    </p>
+
+                    <br>
+
+                    <p class="text-muted">
+                        Instead of keeping important information scattered
+                        across different applications, MindVault brings
+                        everything together in one place.
+                    </p>
+
+                    <br>
+
+                    <a href="/register.html"
+                       class="btn btn-primary">
+                        Create Your Vault →
+                    </a>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <h2>
+                            Why MindVault?
+                        </h2>
+
+                    </div>
+
+                    <div class="documents-list">
+
+                        <div class="document-item">
+
+                            <div class="document-info">
+
+                                <div class="document-icon">
+                                    🧠
+                                </div>
+
+                                <div>
+                                    <div class="document-name">
+                                        Organized Knowledge
+                                    </div>
+
+                                    <div class="document-meta">
+                                        Keep everything structured
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="document-item">
+
+                            <div class="document-info">
+
+                                <div class="document-icon">
+                                    ⚡
+                                </div>
+
+                                <div>
+                                    <div class="document-name">
+                                        Fast Access
+                                    </div>
+
+                                    <div class="document-meta">
+                                        Find information quickly
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="document-item">
+
+                            <div class="document-info">
+
+                                <div class="document-icon">
+                                    🔐
+                                </div>
+
+                                <div>
+                                    <div class="document-name">
+                                        Secure Workspace
+                                    </div>
+
+                                    <div class="document-meta">
+                                        JWT protected APIs
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CALL TO ACTION
+         ===================================================== -->
+
+    <section class="section">
+
+        <div class="container">
+
+            <div class="panel text-center">
+
+                <div class="badge">
+                    Start Building Your Knowledge Vault
+                </div>
+
+                <h2>
+                    Everything you need to
+                    <span class="text-green">
+                    think better.
+                </span>
+                </h2>
+
+                <p class="text-muted mt-1">
+                    Create your MindVault account and start
+                    organizing your knowledge today.
+                </p>
+
+                <div class="mt-2">
+
+                    <a href="/register.html"
+                       class="btn btn-primary">
+                        Get Started →
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<footer class="footer"
+        id="contact">
+
+    <div class="container">
 
         <p>
-            Store, organize and understand your knowledge.
-            MindVault AI helps you manage notes, documents
-            and ideas intelligently.
+            © 2026
+            <span>MindVault AI</span>.
+            All rights reserved.
         </p>
 
-
-
-        <div class="hero-buttons">
-
-
-            <button class="primary-btn">
-                Start Building Your Vault
-            </button>
-
-
-            <button class="secondary-btn">
-                Explore Features
-            </button>
-
-
-        </div>
-
-
-    </div>
-
-
-
-
-    <div class="hero-image">
-
-
-        <div class="ai-card">
-
-
-            <div class="circle"></div>
-
-
-            <h3>
-                AI Knowledge Assistant
-            </h3>
-
-
-            <p>
-                Summarize • Search • Learn
-            </p>
-
-
-
-        </div>
-
-
-    </div>
-
-
-
-</section>
-
-
-
-
-
-<!-- Features Section -->
-
-
-<section class="features">
-
-
-    <h2>
-        Everything you need to manage knowledge
-    </h2>
-
-
-
-    <div class="feature-container">
-
-
-        <div class="feature-card">
-
-
-            <h3>
-                AI Summaries
-            </h3>
-
-
-            <p>
-                Convert long documents into quick insights.
-            </p>
-
-
-        </div>
-
-
-
-
-        <div class="feature-card">
-
-
-            <h3>
-                Smart Search
-            </h3>
-
-
-            <p>
-                Find anything from your personal knowledge base.
-            </p>
-
-
-        </div>
-
-
-
-
-
-        <div class="feature-card">
-
-
-            <h3>
-                AI Chat
-            </h3>
-
-
-            <p>
-                Ask questions from your own documents.
-            </p>
-
-
-        </div>
-
-
-    </div>
-
-
-
-</section>
-
-
-
-
-
-
-<!-- How It Works Section -->
-
-
-<section class="how-it-works">
-
-
-    <h2>
-        How MindVault Works
-    </h2>
-
-
-
-
-    <div class="steps">
-
-
-        <div class="step-card">
-
-
-            <div class="step-number">
-                01
-            </div>
-
-
-            <h3>
-                Upload Knowledge
-            </h3>
-
-
-            <p>
-                Add your notes, documents, PDFs and personal information.
-            </p>
-
-
-        </div>
-
-
-
-
-
-        <div class="step-card">
-
-
-            <div class="step-number">
-                02
-            </div>
-
-
-            <h3>
-                AI Understands
-            </h3>
-
-
-            <p>
-                Our AI analyzes your data and creates a smart knowledge base.
-            </p>
-
-
-        </div>
-
-
-
-
-
-        <div class="step-card">
-
-
-            <div class="step-number">
-                03
-            </div>
-
-
-            <h3>
-                Ask Anything
-            </h3>
-
-
-            <p>
-                Chat with your personal AI assistant and get instant answers.
-            </p>
-
-
-        </div>
-
-
-
-    </div>
-
-
-
-</section>
-
-
-
-
-
-
-
-<!-- AI Workspace Section -->
-
-
-<section class="workspace">
-
-
-    <h2>
-        Your AI Knowledge Workspace
-    </h2>
-
-
-
-
-    <div class="workspace-container">
-
-
-
-        <!-- Upload Box -->
-
-
-        <div class="upload-box">
-
-
-            <h3>
-                Upload Documents
-            </h3>
-
-
-            <p>
-                Add PDFs, notes, research papers and files.
-            </p>
-
-
-
-            <div class="upload-area">
-
-                Drag & Drop Files Here
-
-            </div>
-
-
-
-
-            <button>
-                Upload File
-            </button>
-
-
-
-        </div>
-
-
-
-
-
-
-
-        <!-- Chat Box -->
-
-
-        <div class="chat-box">
-
-
-            <h3>
-                MindVault AI Assistant
-            </h3>
-
-
-
-            <div class="message user">
-
-                Explain my uploaded document
-
-            </div>
-
-
-
-
-
-            <div class="message ai">
-
-                I have analyzed your document.
-                Here is the summary...
-
-            </div>
-
-
-
-
-
-            <div class="chat-input">
-
-                Ask anything...
-
-            </div>
-
-
-
-        </div>
-
-
-
-
-    </div>
-
-
-
-</section>
-<!-- Statistics Section -->
-
-<section class="stats">
-
-
-    <div class="stat-card">
-
-        <h2>
-            10K+
-        </h2>
-
-        <p>
-            Notes Organized
-        </p>
-
-    </div>
-
-
-
-    <div class="stat-card">
-
-        <h2>
-            99%
-        </h2>
-
-        <p>
-            Search Accuracy
-        </p>
-
-    </div>
-
-
-
-    <div class="stat-card">
-
-        <h2>
-            24/7
-        </h2>
-
-        <p>
-            AI Assistance
-        </p>
-
-    </div>
-
-
-
-    <div class="stat-card">
-
-        <h2>
-            Unlimited
-        </h2>
-
-        <p>
-            Knowledge Storage
+        <p class="mt-1">
+            AI-powered personal knowledge management.
         </p>
 
     </div>
-
-
-</section>
-<!-- Knowledge Vault Section -->
-
-<section class="vault-section">
-
-
-    <h2>
-        Your Smart Knowledge Vault
-    </h2>
-
-
-    <p class="vault-description">
-        Organize everything you learn in one intelligent space.
-    </p>
-
-
-
-    <div class="vault-container">
-
-
-        <div class="vault-sidebar">
-
-            <h3>
-                My Collections
-            </h3>
-
-
-            <div class="vault-item">
-                📚 Machine Learning Notes
-            </div>
-
-
-            <div class="vault-item">
-                💻 Programming Concepts
-            </div>
-
-
-            <div class="vault-item">
-                📄 Research Papers
-            </div>
-
-
-            <div class="vault-item">
-                🚀 Project Ideas
-            </div>
-
-
-        </div>
-
-
-
-
-        <div class="vault-content">
-
-
-            <h3>
-                AI Generated Summary
-            </h3>
-
-
-            <p>
-                Your uploaded documents are analyzed by AI.
-                MindVault extracts important points,
-                creates summaries and connects related ideas.
-            </p>
-
-
-            <div class="tags">
-
-                <span>AI</span>
-                <span>Spring Boot</span>
-                <span>Machine Learning</span>
-                <span>DSA</span>
-
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-</section>
-<!-- Testimonials Section -->
-
-<section class="testimonials">
-
-
-    <h2>
-        Loved by Knowledge Seekers
-    </h2>
-
-
-    <p class="testimonial-subtitle">
-        See how people use MindVault to organize their learning.
-    </p>
-
-
-
-    <div class="testimonial-container">
-
-
-
-        <div class="testimonial-card">
-
-
-            <p>
-                "MindVault changed the way I study.
-                I can store my notes and instantly find
-                anything using AI."
-            </p>
-
-
-            <h3>
-                - Computer Science Student
-            </h3>
-
-
-        </div>
-
-
-
-
-
-        <div class="testimonial-card">
-
-
-            <p>
-                "Managing research papers became easier.
-                The AI summaries save hours of reading."
-            </p>
-
-
-            <h3>
-                - Researcher
-            </h3>
-
-
-        </div>
-
-
-
-
-
-        <div class="testimonial-card">
-
-
-            <p>
-                "My programming knowledge is now organized
-                in one intelligent workspace."
-            </p>
-
-
-            <h3>
-                - Software Developer
-            </h3>
-
-
-        </div>
-
-
-
-    </div>
-
-
-
-</section>
-<!-- Call To Action Section -->
-
-<section class="cta">
-
-
-    <h2>
-        Build Your Second Brain With AI
-    </h2>
-
-
-    <p>
-        Start organizing your knowledge,
-        learning faster and connecting ideas
-        with MindVault AI.
-    </p>
-
-
-    <button>
-        Get Started With MindVault
-    </button>
-
-
-</section>
-
-
-
-
-
-<!-- Footer -->
-
-<footer>
-
-
-    <div class="footer-container">
-
-
-        <div class="footer-brand">
-
-            <h2>
-                MindVault AI
-            </h2>
-
-            <p>
-                Your personal AI-powered knowledge system.
-            </p>
-
-        </div>
-
-
-
-
-        <div class="footer-links">
-
-            <h3>
-                Product
-            </h3>
-
-            <a href="#">
-                Features
-            </a>
-
-            <a href="#">
-                AI Assistant
-            </a>
-
-            <a href="#">
-                Knowledge Vault
-            </a>
-
-        </div>
-
-
-
-
-        <div class="footer-links">
-
-            <h3>
-                Resources
-            </h3>
-
-            <a href="#">
-                Documentation
-            </a>
-
-            <a href="#">
-                GitHub
-            </a>
-
-            <a href="#">
-                Contact
-            </a>
-
-        </div>
-
-
-
-    </div>
-
-
-
-    <div class="copyright">
-
-        © 2026 MindVault AI. All rights reserved.
-
-    </div>
-
 
 </footer>
 
 
+<!-- =====================================================
+     JAVASCRIPT
 
+     IMPORTANT:
+     script.js is directly inside static folder
+     ===================================================== -->
 
-
-
-<script src="script.js"></script>
-
+<script src="/script.js"></script>
 
 </body>
 
 </html>
+
