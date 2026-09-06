@@ -20,60 +20,48 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
 
         http
-
-                // Disable CSRF because we are using JWT
                 .csrf(csrf -> csrf.disable())
 
-                // JWT based authentication is stateless
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
                         )
                 )
 
-                // Authorization rules
                 .authorizeHttpRequests(auth -> auth
 
-                        // ==========================
-                        // PUBLIC FRONTEND PAGES
-                        // ==========================
+                        // Frontend pages
                         .requestMatchers(
                                 "/",
                                 "/index.html",
                                 "/login.html",
                                 "/register.html",
                                 "/dashboard.html",
+                                "/notes.html",
+                                "/collections.html",
+                                "/documents.html",
                                 "/style.css",
                                 "/script.js",
                                 "/favicon.ico"
                         ).permitAll()
 
-                        // ==========================
-                        // PUBLIC AUTH APIs
-                        // ==========================
+                        // Authentication APIs
                         .requestMatchers(
                                 "/api/users/register",
                                 "/api/users/login"
                         ).permitAll()
 
-                        // ==========================
-                        // SWAGGER
-                        // ==========================
+                        // Swagger
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
 
-                        // ==========================
-                        // EVERYTHING ELSE PROTECTED
-                        // ==========================
+                        // EVERYTHING ELSE requires JWT
                         .anyRequest().authenticated()
                 )
 
-                // ==========================
-                // JWT FILTER
-                // ==========================
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class

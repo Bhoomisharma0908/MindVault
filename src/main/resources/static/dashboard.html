@@ -2,154 +2,121 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Dashboard - MindVault AI</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css">
+
 </head>
 
 <body>
 
-<nav class="dashboard-nav">
+<div class="dashboard-container">
 
-    <div class="logo">
-        🧠 MindVault <span>AI</span>
-    </div>
+    <header class="dashboard-header">
 
-    <button id="logoutBtn">
-        Logout
-    </button>
+        <div>
+            <h1>MindVault AI</h1>
+            <p>Your personal knowledge vault</p>
+        </div>
 
-</nav>
+        <button id="logoutBtn">
+            Logout
+        </button>
 
-
-<main class="dashboard">
-
-    <h1>Welcome to MindVault 👋</h1>
-
-    <p class="dashboard-subtitle">
-        Manage your knowledge, notes and documents in one place.
-    </p>
+    </header>
 
 
-    <div class="dashboard-grid">
+    <main>
 
-        <!-- NOTES -->
+        <h2>Welcome to your Knowledge Vault</h2>
 
-        <div class="dashboard-card">
+        <div class="dashboard-grid">
 
-            <div class="card-icon">
-                📝
+
+            <!-- NOTES -->
+
+            <div class="dashboard-card">
+
+                <h3>📝 Notes</h3>
+
+                <p>
+                    Create, edit, search and manage
+                    your personal notes.
+                </p>
+
+                <button id="notesBtn">
+                    Open Notes
+                </button>
+
             </div>
 
-            <h2>Notes</h2>
 
-            <p>
-                Create, edit, search and organize your personal notes.
-            </p>
+            <!-- COLLECTIONS -->
 
-            <button onclick="openNotes()">
-                Open Notes
-            </button>
+            <div class="dashboard-card">
+
+                <h3>📁 Collections</h3>
+
+                <p>
+                    Organize your notes into collections.
+                </p>
+
+                <button id="collectionsBtn">
+                    Open Collections
+                </button>
+
+            </div>
+
+
+            <!-- DOCUMENTS -->
+
+            <div class="dashboard-card">
+
+                <h3>📄 Documents</h3>
+
+                <p>
+                    Upload, search and manage documents.
+                </p>
+
+                <button id="documentsBtn">
+                    Open Documents
+                </button>
+
+            </div>
+
+
+            <!-- AI ASSISTANT -->
+
+            <div class="dashboard-card">
+
+                <h3>🤖 AI Assistant</h3>
+
+                <p>
+                    Ask questions and get help
+                    from your knowledge vault.
+                </p>
+
+                <button id="aiBtn">
+                    Open AI Assistant
+                </button>
+
+            </div>
+
 
         </div>
 
+    </main>
 
-        <!-- COLLECTIONS -->
-
-        <div class="dashboard-card">
-
-            <div class="card-icon">
-                📚
-            </div>
-
-            <h2>Collections</h2>
-
-            <p>
-                Organize your notes into collections.
-            </p>
-
-            <button onclick="openCollections()">
-                Open Collections
-            </button>
-
-        </div>
+</div>
 
 
-        <!-- DOCUMENTS -->
-
-        <div class="dashboard-card">
-
-            <div class="card-icon">
-                📄
-            </div>
-
-            <h2>Documents</h2>
-
-            <p>
-                Upload, search, download and manage your documents.
-            </p>
-
-            <button onclick="openDocuments()">
-                Open Documents
-            </button>
-
-        </div>
-
-
-        <!-- AI -->
-
-        <div class="dashboard-card">
-
-            <div class="card-icon">
-                🤖
-            </div>
-
-            <h2>AI Assistant</h2>
-
-            <p>
-                Your intelligent personal knowledge assistant.
-            </p>
-
-            <button onclick="alert('AI Assistant will be added next.')">
-                Open AI Assistant
-            </button>
-
-        </div>
-
-    </div>
-
-</main>
-
-
-<script>
-
-    function openNotes() {
-        alert("Notes page will be connected next.");
-    }
-
-    function openCollections() {
-        alert("Collections page will be connected next.");
-    }
-
-    function openDocuments() {
-        alert("Documents page will be connected next.");
-    }
-
-
-    document
-        .getElementById("logoutBtn")
-        .addEventListener("click", function () {
-
-            localStorage.removeItem("jwtToken");
-
-            window.location.href = "/";
-
-        });
-
-</script>
+<script src="/script.js"></script>
 
 </body>
 
