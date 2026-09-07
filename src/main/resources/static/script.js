@@ -1,230 +1,279 @@
-// ======================================================
-// MINDVAULT AI - COMPLETE SCRIPT
-// ======================================================
+// ============================================================
+// MINDVAULT AI - COMPLETE SCRIPT.JS
+// ============================================================
 
 
-// ======================================================
-// HELPER: GET JWT
-// ======================================================
+// ============================================================
+// AUTHENTICATION HELPERS
+// ============================================================
 
 function getToken() {
     return localStorage.getItem("jwtToken");
 }
 
 
-// ======================================================
-// REGISTER
-// ======================================================
-
-const registerForm = document.getElementById("registerForm");
-
-if (registerForm) {
-
-    registerForm.addEventListener("submit", async function (event) {
-
-        event.preventDefault();
-
-        const name = document
-            .getElementById("registerName")
-            .value
-            .trim();
-
-        const email = document
-            .getElementById("registerEmail")
-            .value
-            .trim();
-
-        const password =
-            document.getElementById("registerPassword").value;
-
-        const confirmPassword =
-            document.getElementById("confirmPassword").value;
-
-        const message =
-            document.getElementById("registerMessage");
-
-
-        // -----------------------------
-        // Validation
-        // -----------------------------
-
-        if (!name || !email || !password || !confirmPassword) {
-
-            message.textContent =
-                "Please fill in all fields.";
-
-            return;
-        }
-
-
-        if (password !== confirmPassword) {
-
-            message.textContent =
-                "Passwords do not match.";
-
-            return;
-        }
-
-
-        try {
-
-            const response = await fetch(
-                "/api/users/register",
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        name: name,
-                        email: email,
-                        password: password
-                    })
-                }
-            );
-
-
-            let data = {};
-
-            try {
-                data = await response.json();
-            } catch (error) {
-                data = {};
-            }
-
-
-            console.log("Register response:", data);
-
-
-            if (response.ok) {
-
-                message.textContent =
-                    "Account created successfully! Please login.";
-
-                message.style.color = "green";
-
-
-                // IMPORTANT:
-                // Registration does NOT automatically
-                // log the user into the dashboard.
-
-                setTimeout(function () {
-
-                    window.location.href =
-                        "/login.html";
-
-                }, 1200);
-
-
-            } else {
-
-                message.textContent =
-                    data.message ||
-                    data.error ||
-                    "Registration failed.";
-
-                message.style.color = "red";
-
-            }
-
-
-        } catch (error) {
-
-            console.error(
-                "Registration error:",
-                error
-            );
-
-            message.textContent =
-                "Unable to connect to server.";
-
-            message.style.color = "red";
-
-        }
-
-    });
-
+function saveToken(token) {
+    localStorage.setItem("jwtToken", token);
 }
 
 
+function logout() {
+    localStorage.removeItem("jwtToken");
+    window.location.href = "/index.html";
+}
 
-// ======================================================
+
+// ============================================================
+// AUTHENTICATED FETCH
+// ============================================================
+
+async function authenticatedFetch(url, options = {}) {
+
+    const token = getToken();
+
+    if (!token) {
+        window.location.href = "/login.html";
+        return null;
+    }
+
+    const headers = {
+        ...(options.headers || {}),
+        "Authorization": `Bearer ${token}`
+    };
+
+    // Add JSON content type when sending JSON
+    if (options.body && !(options.body instanceof FormData)) {
+        headers["Content-Type"] = "application/json";
+    }
+
+    options.headers = headers;
+
+    try {
+
+        const response = await fetch(url, options);
+
+        if (response.status === 401 || response.status === 403) {
+
+            localStorage.removeItem("jwtToken");
+
+            window.location.href = "/login.html";
+
+            return null;
+        }
+
+        return response;
+
+    } catch (error) {
+
+        console.error("Network error:", error);
+
+        throw error;
+    }
+}
+
+
+// ============================================================
+// HTML ESCAPE
+// ============================================================
+
+function escapeHtml(value) {
+
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+// ============================================================
+// LOGOUT BUTTON
+// ============================================================
+
+const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+
+    logoutBtn.addEventListener("click", function () {
+
+        logout();
+
+    });
+}
+
+
+// ============================================================
+// REGISTER
+// ============================================================
+
+const registerForm =
+    document.getElementById("registerForm");
+
+if (registerForm) {
+
+    registerForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+            const name =
+                document.getElementById("name").value.trim();
+
+            const email =
+                document.getElementById("email").value.trim();
+
+            const password =
+                document.getElementById("password").value;
+
+            const message =
+                document.getElementById("registerMessage");
+
+            try {
+
+                const response = await fetch(
+                    "/api/users/register",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            name: name,
+                            email: email,
+                            password: password
+                        })
+                    }
+                );
+
+                const text = await response.text();
+
+                let data = {};
+
+                try {
+                    data = text ? JSON.parse(text) : {};
+                } catch {
+                    data = {};
+                }
+
+                if (!response.ok) {
+
+                    message.textContent =
+                        data.message ||
+                        data.error ||
+                        text ||
+                        "Registration failed.";
+
+                    return;
+                }
+
+                message.textContent =
+                    "Account created successfully! Redirecting to login...";
+
+                registerForm.reset();
+
+                setTimeout(function () {
+
+                    window.location.href = "/login.html";
+
+                }, 1200);
+
+            } catch (error) {
+
+                console.error(
+                    "Registration error:",
+                    error
+                );
+
+                message.textContent =
+                    "Unable to connect to server.";
+            }
+        }
+    );
+}
+
+
+// ============================================================
 // LOGIN
-// ======================================================
+// ============================================================
 
-const loginForm = document.getElementById("loginForm");
+const loginForm =
+    document.getElementById("loginForm");
 
 if (loginForm) {
 
-    loginForm.addEventListener("submit", async function (event) {
+    loginForm.addEventListener(
+        "submit",
+        async function (event) {
 
-        event.preventDefault();
+            event.preventDefault();
 
+            const email =
+                document.getElementById("email").value.trim();
 
-        const email =
-            document.getElementById("loginEmail")
-                .value
-                .trim();
+            const password =
+                document.getElementById("password").value;
 
-        const password =
-            document.getElementById("loginPassword")
-                .value;
-
-        const message =
-            document.getElementById("loginMessage");
-
-
-        if (!email || !password) {
-
-            message.textContent =
-                "Please enter email and password.";
-
-            return;
-        }
-
-
-        try {
-
-            const response = await fetch(
-                "/api/users/login",
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        email: email,
-                        password: password
-                    })
-                }
-            );
-
-
-            let data = {};
+            const message =
+                document.getElementById("loginMessage");
 
             try {
-                data = await response.json();
-            } catch (error) {
-                data = {};
-            }
 
+                const response = await fetch(
+                    "/api/users/login",
+                    {
+                        method: "POST",
 
-            console.log("Login response:", data);
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
 
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
+                        })
+                    }
+                );
 
-            if (response.ok) {
+                const text = await response.text();
+
+                let data = {};
+
+                try {
+                    data = text ? JSON.parse(text) : {};
+                } catch {
+                    data = {};
+                }
+
+                if (!response.ok) {
+
+                    message.textContent =
+                        data.message ||
+                        data.error ||
+                        text ||
+                        "Invalid email or password.";
+
+                    return;
+                }
 
                 const token =
                     data.token ||
                     data.jwt ||
                     data.accessToken;
 
-
                 if (!token) {
+
+                    console.error(
+                        "Login response:",
+                        data
+                    );
 
                     message.textContent =
                         "Login successful, but JWT token was not received.";
@@ -232,246 +281,138 @@ if (loginForm) {
                     return;
                 }
 
-
-                // Store JWT only after successful login
-
-                localStorage.setItem(
-                    "jwtToken",
-                    token
-                );
-
+                saveToken(token);
 
                 message.textContent =
-                    "Login successful! Opening dashboard...";
-
-                message.style.color = "green";
-
+                    "Login successful! Redirecting...";
 
                 setTimeout(function () {
 
                     window.location.href =
                         "/dashboard.html";
 
-                }, 700);
+                }, 500);
 
+            } catch (error) {
 
-            } else {
+                console.error(
+                    "Login error:",
+                    error
+                );
 
                 message.textContent =
-                    data.message ||
-                    data.error ||
-                    "Invalid email or password.";
-
-                message.style.color = "red";
-
+                    "Unable to connect to server.";
             }
-
-
-        } catch (error) {
-
-            console.error(
-                "Login error:",
-                error
-            );
-
-            message.textContent =
-                "Unable to connect to server.";
-
-            message.style.color = "red";
-
-        }
-
-    });
-
-}
-
-
-
-// ======================================================
-// LOGOUT
-// ======================================================
-
-const logoutButton =
-    document.getElementById("logoutBtn");
-
-if (logoutButton) {
-
-    logoutButton.addEventListener(
-        "click",
-        function () {
-
-            localStorage.removeItem("jwtToken");
-
-            window.location.href =
-                "/index.html";
-
         }
     );
-
 }
 
 
-
-// ======================================================
-// DASHBOARD PROTECTION
-// ======================================================
-
-const currentPage =
-    window.location.pathname;
-
+// ============================================================
+// DASHBOARD AUTH CHECK
+// ============================================================
 
 if (
-    currentPage.endsWith("/dashboard.html")
+    window.location.pathname === "/dashboard.html"
 ) {
 
-    const token = getToken();
+    if (!getToken()) {
 
-
-    // No JWT = user is not logged in
-
-    if (!token) {
-
-        window.location.href =
-            "/login.html";
-
+        window.location.href = "/login.html";
     }
-
 }
 
 
+// ============================================================
+// DASHBOARD NAVIGATION
+// ============================================================
 
-// ======================================================
-// NOTES BUTTON
-// ======================================================
-
-const notesButton =
+const notesBtn =
     document.getElementById("notesBtn");
 
-if (notesButton) {
+if (notesBtn) {
 
-    notesButton.addEventListener(
+    notesBtn.addEventListener(
         "click",
         function () {
-
-            if (!getToken()) {
-
-                window.location.href =
-                    "/login.html";
-
-                return;
-            }
-
 
             window.location.href =
                 "/notes.html";
 
         }
     );
-
 }
 
 
-
-// ======================================================
-// COLLECTIONS BUTTON
-// ======================================================
-
-const collectionsButton =
+const collectionsBtn =
     document.getElementById("collectionsBtn");
 
-if (collectionsButton) {
+if (collectionsBtn) {
 
-    collectionsButton.addEventListener(
+    collectionsBtn.addEventListener(
         "click",
         function () {
-
-            if (!getToken()) {
-
-                window.location.href =
-                    "/login.html";
-
-                return;
-            }
-
 
             window.location.href =
                 "/collections.html";
 
         }
     );
-
 }
 
 
-
-// ======================================================
-// DOCUMENTS BUTTON
-// ======================================================
-
-const documentsButton =
+const documentsBtn =
     document.getElementById("documentsBtn");
 
-if (documentsButton) {
+if (documentsBtn) {
 
-    documentsButton.addEventListener(
+    documentsBtn.addEventListener(
         "click",
         function () {
-
-            if (!getToken()) {
-
-                window.location.href =
-                    "/login.html";
-
-                return;
-            }
-
 
             window.location.href =
                 "/documents.html";
 
         }
     );
-
 }
 
 
-
-// ======================================================
-// AI ASSISTANT
-// ======================================================
-
-const aiButton =
+const aiBtn =
     document.getElementById("aiBtn");
 
-if (aiButton) {
+if (aiBtn) {
 
-    aiButton.addEventListener(
+    aiBtn.addEventListener(
         "click",
         function () {
 
             alert(
-                "AI Assistant feature is coming soon."
+                "AI Assistant will be available in the next module."
             );
 
         }
     );
-
 }
-// ======================================================
+
+
+// ============================================================
 // NOTES
-// ======================================================
-
-const noteForm = document.getElementById("noteForm");
-
-const notesContainer =
-    document.getElementById("notesContainer");
+// ============================================================
 
 
-// ======================================================
-// LOAD ALL NOTES
-// ======================================================
-
+// Load all notes
 async function loadNotes() {
+
+    const container =
+        document.getElementById("notesContainer");
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML =
+        "<p>Loading notes...</p>";
 
     try {
 
@@ -484,59 +425,67 @@ async function loadNotes() {
 
         if (!response.ok) {
 
-            notesContainer.innerHTML =
-                "<p>Unable to load notes.</p>";
+            const text =
+                await response.text();
 
-            return;
+            throw new Error(
+                text || "Failed to load notes"
+            );
         }
 
-
-        const notes = await response.json();
+        const notes =
+            await response.json();
 
         displayNotes(notes);
 
-
     } catch (error) {
 
-        console.error("Load notes error:", error);
+        console.error(
+            "Load notes error:",
+            error
+        );
 
-        notesContainer.innerHTML =
-            "<p>Unable to connect to server.</p>";
+        container.innerHTML =
+            `<p>Unable to load notes: ${escapeHtml(error.message)}</p>`;
     }
 }
 
 
-// ======================================================
-// DISPLAY NOTES
-// ======================================================
-
+// Display notes
 function displayNotes(notes) {
+
+    const container =
+        document.getElementById("notesContainer");
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
 
     if (!notes || notes.length === 0) {
 
-        notesContainer.innerHTML =
-            "<p>No notes found. Create your first note!</p>";
+        container.innerHTML =
+            "<p>No notes found.</p>";
 
         return;
     }
 
-
-    notesContainer.innerHTML = "";
-
-
     notes.forEach(function (note) {
 
-        const noteCard =
+        const card =
             document.createElement("div");
 
-        noteCard.className = "note-card";
+        card.className =
+            "dashboard-card";
 
+        card.innerHTML = `
 
-        noteCard.innerHTML = `
+            <h3>
+                📝 ${escapeHtml(note.title)}
+            </h3>
 
-            <h3>${escapeHtml(note.title)}</h3>
-
-            <p class="note-content">
+            <p>
                 ${escapeHtml(note.content)}
             </p>
 
@@ -555,32 +504,29 @@ function displayNotes(notes) {
                 ${note.collectionId || "None"}
             </p>
 
-            <div class="note-actions">
+            <div>
 
                 <button
                     onclick="editNote(${note.id})">
-                    Edit
+                    ✏️ Edit
                 </button>
 
                 <button
                     onclick="deleteNote(${note.id})">
-                    Delete
+                    🗑️ Delete
                 </button>
 
             </div>
-
         `;
 
-
-        notesContainer.appendChild(noteCard);
-
+        container.appendChild(card);
     });
 }
 
 
-// ======================================================
-// CREATE NOTE
-// ======================================================
+// Create note
+const noteForm =
+    document.getElementById("noteForm");
 
 if (noteForm) {
 
@@ -590,59 +536,38 @@ if (noteForm) {
 
             event.preventDefault();
 
-
             const title =
                 document.getElementById("noteTitle")
-                    .value
-                    .trim();
+                    .value.trim();
 
             const content =
                 document.getElementById("noteContent")
-                    .value
-                    .trim();
+                    .value.trim();
 
             const category =
                 document.getElementById("noteCategory")
-                    .value
-                    .trim();
+                    .value.trim();
 
             const tags =
                 document.getElementById("noteTags")
-                    .value
-                    .trim();
+                    .value.trim();
 
-            const collectionValue =
-                document.getElementById("noteCollectionId")
-                    .value
-                    .trim();
+            const collectionInput =
+                document.getElementById("noteCollectionId");
 
+            let collectionId = null;
 
-            const noteMessage =
-                document.getElementById("noteMessage");
+            if (
+                collectionInput &&
+                collectionInput.value.trim() !== ""
+            ) {
 
-
-            const noteData = {
-
-                title: title,
-
-                content: content,
-
-                category: category,
-
-                tags: tags
-
-            };
-
-
-            // Only send collectionId if entered
-
-            if (collectionValue) {
-
-                noteData.collectionId =
-                    Number(collectionValue);
-
+                collectionId =
+                    Number(collectionInput.value);
             }
 
+            const message =
+                document.getElementById("noteMessage");
 
             try {
 
@@ -652,48 +577,48 @@ if (noteForm) {
                         {
                             method: "POST",
 
-                            body: JSON.stringify(noteData)
+                            body: JSON.stringify({
+                                title: title,
+                                content: content,
+                                category: category,
+                                tags: tags,
+                                collectionId: collectionId
+                            })
                         }
                     );
-
 
                 if (!response) {
                     return;
                 }
 
+                const text =
+                    await response.text();
 
-                const data =
-                    await response.json();
+                let data = {};
 
-
-                if (response.ok) {
-
-                    noteMessage.textContent =
-                        "Note created successfully!";
-
-                    noteMessage.style.color =
-                        "green";
-
-
-                    noteForm.reset();
-
-
-                    // Refresh notes
-
-                    loadNotes();
-
-
-                } else {
-
-                    noteMessage.textContent =
-                        data.message ||
-                        data.error ||
-                        "Unable to create note.";
-
-                    noteMessage.style.color =
-                        "red";
+                try {
+                    data = text ? JSON.parse(text) : {};
+                } catch {
+                    data = {};
                 }
 
+                if (!response.ok) {
+
+                    message.textContent =
+                        data.message ||
+                        data.error ||
+                        text ||
+                        "Failed to create note.";
+
+                    return;
+                }
+
+                message.textContent =
+                    "Note created successfully!";
+
+                noteForm.reset();
+
+                await loadNotes();
 
             } catch (error) {
 
@@ -702,24 +627,18 @@ if (noteForm) {
                     error
                 );
 
-                noteMessage.textContent =
-                    "Unable to connect to server.";
-
+                message.textContent =
+                    error.message ||
+                    "Unable to create note.";
             }
-
         }
     );
-
 }
 
 
-// ======================================================
-// SEARCH NOTES
-// ======================================================
-
+// Search notes
 const searchNotesBtn =
     document.getElementById("searchNotesBtn");
-
 
 if (searchNotesBtn) {
 
@@ -729,73 +648,63 @@ if (searchNotesBtn) {
 
             const keyword =
                 document.getElementById("noteSearch")
-                    .value
-                    .trim();
-
+                    .value.trim();
 
             if (!keyword) {
 
-                loadNotes();
+                await loadNotes();
 
                 return;
             }
 
+            const container =
+                document.getElementById(
+                    "notesContainer"
+                );
 
             try {
 
                 const response =
                     await authenticatedFetch(
-                        "/api/notes/search?keyword=" +
-                        encodeURIComponent(keyword)
+                        `/api/notes/search?keyword=${encodeURIComponent(keyword)}`
                     );
-
 
                 if (!response) {
                     return;
                 }
 
-
                 if (!response.ok) {
 
-                    notesContainer.innerHTML =
-                        "<p>Search failed.</p>";
-
-                    return;
+                    throw new Error(
+                        "Search failed"
+                    );
                 }
-
 
                 const notes =
                     await response.json();
 
-
                 displayNotes(notes);
-
 
             } catch (error) {
 
                 console.error(
-                    "Search error:",
+                    "Search notes error:",
                     error
                 );
 
-                notesContainer.innerHTML =
+                container.innerHTML =
                     "<p>Unable to search notes.</p>";
-
             }
-
         }
     );
-
 }
 
 
-// ======================================================
-// SHOW ALL NOTES
-// ======================================================
-
+// Show all notes
 const showAllNotesBtn =
-    document.getElementById("showAllNotesBtn");
-
+    document.getElementById(
+        "showAllNotesBtn"
+    );
 
 if (showAllNotesBtn) {
 
@@ -803,21 +712,14 @@ if (showAllNotesBtn) {
         "click",
         function () {
 
-            document.getElementById("noteSearch")
-                .value = "";
-
             loadNotes();
 
         }
     );
-
 }
 
 
-// ======================================================
-// DELETE NOTE
-// ======================================================
-
+// Delete note
 async function deleteNote(id) {
 
     const confirmed =
@@ -825,40 +727,42 @@ async function deleteNote(id) {
             "Are you sure you want to delete this note?"
         );
 
-
     if (!confirmed) {
         return;
     }
-
 
     try {
 
         const response =
             await authenticatedFetch(
-                "/api/notes/" + id,
+                `/api/notes/${id}`,
                 {
                     method: "DELETE"
                 }
             );
 
-
         if (!response) {
             return;
         }
 
+        const text =
+            await response.text();
 
-        if (response.ok) {
+        if (!response.ok) {
 
-            alert("Note deleted successfully.");
+            alert(
+                text ||
+                "Failed to delete note."
+            );
 
-            loadNotes();
-
-        } else {
-
-            alert("Unable to delete note.");
-
+            return;
         }
 
+        alert(
+            "Note deleted successfully."
+        );
+
+        await loadNotes();
 
     } catch (error) {
 
@@ -867,124 +771,145 @@ async function deleteNote(id) {
             error
         );
 
-        alert("Unable to connect to server.");
-
+        alert(
+            "Unable to delete note."
+        );
     }
-
 }
 
 
-// ======================================================
-// EDIT NOTE
-// ======================================================
-
+// Edit note
 async function editNote(id) {
-
-    const title =
-        prompt("Enter new note title:");
-
-
-    if (title === null) {
-        return;
-    }
-
-
-    const content =
-        prompt("Enter new note content:");
-
-
-    if (content === null) {
-        return;
-    }
-
 
     try {
 
-        // First get existing note
-
-        const getResponse =
-            await authenticatedFetch(
-                "/api/notes/" + id
-            );
-
-
-        if (!getResponse) {
-            return;
-        }
-
-
-        if (!getResponse.ok) {
-
-            alert("Unable to find note.");
-
-            return;
-        }
-
-
-        const existingNote =
-            await getResponse.json();
-
-
-        const updatedNote = {
-
-            title: title,
-
-            content: content,
-
-            category:
-                existingNote.category || "",
-
-            tags:
-                existingNote.tags || ""
-
-        };
-
-
-        if (existingNote.collectionId) {
-
-            updatedNote.collectionId =
-                existingNote.collectionId;
-
-        }
-
-
         const response =
             await authenticatedFetch(
-                "/api/notes/" + id,
-                {
-                    method: "PUT",
-
-                    body:
-                        JSON.stringify(updatedNote)
-                }
+                `/api/notes/${id}`
             );
-
 
         if (!response) {
             return;
         }
 
+        if (!response.ok) {
 
-        if (response.ok) {
+            throw new Error(
+                "Unable to load note."
+            );
+        }
 
-            alert(
-                "Note updated successfully."
+        const note =
+            await response.json();
+
+        const title =
+            prompt(
+                "Enter note title:",
+                note.title
             );
 
-            loadNotes();
+        if (title === null) {
+            return;
+        }
 
-        } else {
+        const content =
+            prompt(
+                "Enter note content:",
+                note.content
+            );
 
-            const data =
-                await response.json();
+        if (content === null) {
+            return;
+        }
+
+        const category =
+            prompt(
+                "Enter category:",
+                note.category || ""
+            );
+
+        if (category === null) {
+            return;
+        }
+
+        const tags =
+            prompt(
+                "Enter tags:",
+                note.tags || ""
+            );
+
+        if (tags === null) {
+            return;
+        }
+
+        const collectionIdInput =
+            prompt(
+                "Enter collection ID (leave empty for none):",
+                note.collectionId || ""
+            );
+
+        if (collectionIdInput === null) {
+            return;
+        }
+
+        let collectionId = null;
+
+        if (
+            collectionIdInput.trim() !== ""
+        ) {
+
+            collectionId =
+                Number(collectionIdInput);
+        }
+
+        const updateResponse =
+            await authenticatedFetch(
+                `/api/notes/${id}`,
+                {
+                    method: "PUT",
+
+                    body: JSON.stringify({
+                        title: title.trim(),
+                        content: content.trim(),
+                        category: category.trim(),
+                        tags: tags.trim(),
+                        collectionId: collectionId
+                    })
+                }
+            );
+
+        if (!updateResponse) {
+            return;
+        }
+
+        const text =
+            await updateResponse.text();
+
+        let data = {};
+
+        try {
+            data = text ? JSON.parse(text) : {};
+        } catch {
+            data = {};
+        }
+
+        if (!updateResponse.ok) {
 
             alert(
                 data.message ||
-                "Unable to update note."
+                data.error ||
+                text ||
+                "Failed to update note."
             );
 
+            return;
         }
 
+        alert(
+            "Note updated successfully."
+        );
+
+        await loadNotes();
 
     } catch (error) {
 
@@ -993,101 +918,106 @@ async function editNote(id) {
             error
         );
 
-        alert("Unable to connect to server.");
-
+        alert(
+            error.message ||
+            "Unable to edit note."
+        );
     }
-
 }
 
 
-// ======================================================
-// ESCAPE HTML
-// Prevent HTML injection when displaying notes
-// ======================================================
-
-function escapeHtml(value) {
-
-    if (value === null ||
-        value === undefined) {
-
-        return "";
-
-    }
-
-
-    return String(value)
-
-        .replace(/&/g, "&amp;")
-
-        .replace(/</g, "&lt;")
-
-        .replace(/>/g, "&gt;")
-
-        .replace(/"/g, "&quot;")
-
-        .replace(/'/g, "&#039;");
-}
-
-
-// ======================================================
-// LOAD NOTES WHEN notes.html OPENS
-// ======================================================
+// ============================================================
+// NOTES PAGE INITIALIZATION
+// ============================================================
 
 if (
-    window.location.pathname.endsWith(
-        "/notes.html"
-    )
+    window.location.pathname === "/notes.html"
 ) {
 
     if (!getToken()) {
 
-        window.location.href =
-            "/login.html";
+        window.location.href = "/login.html";
 
     } else {
 
-        loadNotes();
+        loadCollectionsForNotes();
 
+        loadNotes();
+    }
+}
+
+
+// ============================================================
+// COLLECTIONS
+// ============================================================
+
+
+// Load collections
+async function loadCollections() {
+
+    const container =
+        document.getElementById(
+            "collectionsContainer"
+        );
+
+    if (!container) {
+        return;
     }
 
-}
-// ======================================================
-// COLLECTIONS
-// ======================================================
-
-async function loadCollections() {
+    container.innerHTML =
+        "<p>Loading collections...</p>";
 
     try {
 
-        const response = await authenticatedFetch("/api/collections");
+        const response =
+            await authenticatedFetch(
+                "/api/collections"
+            );
 
-        if (!response.ok) {
-            throw new Error("Failed to load collections");
+        if (!response) {
+            return;
         }
 
-        const collections = await response.json();
+        if (!response.ok) {
 
-        displayCollections(collections);
+            const text =
+                await response.text();
+
+            throw new Error(
+                text ||
+                "Failed to load collections."
+            );
+        }
+
+        const collections =
+            await response.json();
+
+        displayCollections(
+            collections
+        );
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Load collections error:",
+            error
+        );
 
-        const container = document.getElementById("collectionsContainer");
-
-        if (container) {
-            container.innerHTML =
-                "<p>Unable to load collections.</p>";
-        }
+        container.innerHTML =
+            `<p>Unable to load collections: ${escapeHtml(error.message)}</p>`;
     }
 }
 
 
 // Display collections
-function displayCollections(collections) {
+function displayCollections(
+    collections
+) {
 
     const container =
-        document.getElementById("collectionsContainer");
+        document.getElementById(
+            "collectionsContainer"
+        );
 
     if (!container) {
         return;
@@ -1095,7 +1025,10 @@ function displayCollections(collections) {
 
     container.innerHTML = "";
 
-    if (!collections || collections.length === 0) {
+    if (
+        !collections ||
+        collections.length === 0
+    ) {
 
         container.innerHTML =
             "<p>No collections found. Create your first collection!</p>";
@@ -1103,146 +1036,152 @@ function displayCollections(collections) {
         return;
     }
 
-    collections.forEach(collection => {
+    collections.forEach(
+        function (collection) {
 
-        const card = document.createElement("div");
+            const card =
+                document.createElement("div");
 
-        card.className = "dashboard-card";
+            card.className =
+                "dashboard-card";
 
-        card.innerHTML = `
-            <h3>📁 ${escapeHtml(collection.name)}</h3>
+            card.innerHTML = `
 
-            <p>
-                ${escapeHtml(
-                    collection.description || "No description"
-                )}
-            </p>
+                <h3>
+                    📁 ${escapeHtml(collection.name)}
+                </h3>
 
-            <p>
-                <strong>ID:</strong> ${collection.id}
-            </p>
+                <p>
+                    ${escapeHtml(
+                        collection.description ||
+                        "No description"
+                    )}
+                </p>
 
-            <button
-                onclick="editCollection(${collection.id})">
-                ✏️ Edit
-            </button>
+                <p>
+                    <strong>ID:</strong>
+                    ${collection.id}
+                </p>
 
-            <button
-                onclick="deleteCollection(${collection.id})">
-                🗑️ Delete
-            </button>
-        `;
+                <div>
 
-        container.appendChild(card);
-    });
+                    <button
+                        onclick="editCollection(${collection.id})">
+                        ✏️ Edit
+                    </button>
+
+                    <button
+                        onclick="deleteCollection(${collection.id})">
+                        🗑️ Delete
+                    </button>
+
+                </div>
+            `;
+
+            container.appendChild(card);
+        }
+    );
 }
 
 
 // Create collection
 const collectionForm =
-    document.getElementById("collectionForm");
+    document.getElementById(
+        "collectionForm"
+    );
 
 if (collectionForm) {
 
-    collectionForm.addEventListener("submit", async function (event) {
+    collectionForm.addEventListener(
+        "submit",
+        async function (event) {
 
-        event.preventDefault();
+            event.preventDefault();
 
-        const name =
-            document.getElementById("collectionName").value.trim();
+            const name =
+                document.getElementById(
+                    "collectionName"
+                ).value.trim();
 
-        const description =
-            document.getElementById("collectionDescription").value.trim();
+            const description =
+                document.getElementById(
+                    "collectionDescription"
+                ).value.trim();
 
-        const message =
-            document.getElementById("collectionMessage");
+            const message =
+                document.getElementById(
+                    "collectionMessage"
+                );
 
-        if (!name) {
-
-            message.textContent =
-                "Collection name is required.";
-
-            return;
-        }
-
-        try {
-
-            const response = await authenticatedFetch(
-                "/api/collections",
-                {
-                    method: "POST",
-
-                    body: JSON.stringify({
-                        name: name,
-                        description: description
-                    })
-                }
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
+            if (!name) {
 
                 message.textContent =
-                    data.message || "Failed to create collection.";
+                    "Collection name is required.";
 
                 return;
             }
 
-            message.textContent =
-                "Collection created successfully!";
+            try {
 
-            collectionForm.reset();
+                const response =
+                    await authenticatedFetch(
+                        "/api/collections",
+                        {
+                            method: "POST",
 
-            loadCollections();
+                            body: JSON.stringify({
+                                name: name,
+                                description: description
+                            })
+                        }
+                    );
 
-        } catch (error) {
+                if (!response) {
+                    return;
+                }
 
-            console.error(error);
+                const text =
+                    await response.text();
 
-            message.textContent =
-                "Something went wrong.";
-        }
-    });
-}
+                let data = {};
 
+                try {
+                    data = text ? JSON.parse(text) : {};
+                } catch {
+                    data = {};
+                }
 
-// Delete collection
-async function deleteCollection(id) {
+                if (!response.ok) {
 
-    const confirmed =
-        confirm("Are you sure you want to delete this collection?");
+                    message.textContent =
+                        data.message ||
+                        data.error ||
+                        text ||
+                        `Failed to create collection (${response.status})`;
 
-    if (!confirmed) {
-        return;
-    }
+                    return;
+                }
 
-    try {
+                message.textContent =
+                    "Collection created successfully!";
 
-        const response = await authenticatedFetch(
-            `/api/collections/${id}`,
-            {
-                method: "DELETE"
+                collectionForm.reset();
+
+                await loadCollections();
+
+            } catch (error) {
+
+                console.error(
+                    "Create collection error:",
+                    error
+                );
+
+                message.textContent =
+                    error.message ||
+                    "Unable to create collection.";
             }
-        );
-
-        if (!response.ok) {
-
-            alert("Failed to delete collection.");
-
-            return;
         }
-
-        alert("Collection deleted successfully.");
-
-        loadCollections();
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert("Something went wrong.");
-    }
+    );
 }
 
 
@@ -1251,17 +1190,24 @@ async function editCollection(id) {
 
     try {
 
-        // First get existing collection
         const response =
             await authenticatedFetch(
                 `/api/collections/${id}`
             );
 
+        if (!response) {
+            return;
+        }
+
         if (!response.ok) {
 
-            alert("Unable to get collection.");
+            const text =
+                await response.text();
 
-            return;
+            throw new Error(
+                text ||
+                "Unable to get collection."
+            );
         }
 
         const collection =
@@ -1274,6 +1220,15 @@ async function editCollection(id) {
             );
 
         if (newName === null) {
+            return;
+        }
+
+        if (!newName.trim()) {
+
+            alert(
+                "Collection name cannot be empty."
+            );
+
             return;
         }
 
@@ -1294,41 +1249,853 @@ async function editCollection(id) {
                     method: "PUT",
 
                     body: JSON.stringify({
-                        name: newName,
-                        description: newDescription
+                        name: newName.trim(),
+                        description:
+                            newDescription.trim()
                     })
                 }
             );
 
+        if (!updateResponse) {
+            return;
+        }
+
+        const text =
+            await updateResponse.text();
+
+        let data = {};
+
+        try {
+            data = text ? JSON.parse(text) : {};
+        } catch {
+            data = {};
+        }
+
         if (!updateResponse.ok) {
 
-            alert("Failed to update collection.");
+            alert(
+                data.message ||
+                data.error ||
+                text ||
+                "Failed to update collection."
+            );
 
             return;
         }
 
-        alert("Collection updated successfully.");
+        alert(
+            "Collection updated successfully."
+        );
 
-        loadCollections();
+        await loadCollections();
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Edit collection error:",
+            error
+        );
 
-        alert("Something went wrong.");
+        alert(
+            error.message ||
+            "Unable to edit collection."
+        );
     }
 }
 
 
-// Load collections when collections page opens
-if (window.location.pathname === "/collections.html") {
+// Delete collection
+async function deleteCollection(id) {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete this collection?"
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await authenticatedFetch(
+                `/api/collections/${id}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+        if (!response) {
+            return;
+        }
+
+        const text =
+            await response.text();
+
+        if (!response.ok) {
+
+            alert(
+                text ||
+                "Failed to delete collection."
+            );
+
+            return;
+        }
+
+        alert(
+            "Collection deleted successfully."
+        );
+
+        await loadCollections();
+
+    } catch (error) {
+
+        console.error(
+            "Delete collection error:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to delete collection."
+        );
+    }
+}
+
+
+// Search collections
+async function searchCollections() {
+
+    const searchInput =
+        document.getElementById(
+            "collectionSearch"
+        );
+
+    const container =
+        document.getElementById(
+            "collectionsContainer"
+        );
+
+    if (!searchInput || !container) {
+        return;
+    }
+
+    const keyword =
+        searchInput.value.trim();
+
+    if (!keyword) {
+
+        await loadCollections();
+
+        return;
+    }
+
+    try {
+
+        const response =
+            await authenticatedFetch(
+                `/api/collections/search?keyword=${encodeURIComponent(keyword)}`
+            );
+
+        if (!response) {
+            return;
+        }
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Collection search failed."
+            );
+        }
+
+        const collections =
+            await response.json();
+
+        displayCollections(
+            collections
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Search collections error:",
+            error
+        );
+
+        container.innerHTML =
+            "<p>Unable to search collections.</p>";
+    }
+}
+
+
+// Search button
+const searchCollectionsBtn =
+    document.getElementById(
+        "searchCollectionsBtn"
+    );
+
+if (searchCollectionsBtn) {
+
+    searchCollectionsBtn.addEventListener(
+        "click",
+        function () {
+
+            searchCollections();
+
+        }
+    );
+}
+
+
+// Show all collections
+const showAllCollectionsBtn =
+    document.getElementById(
+        "showAllCollectionsBtn"
+    );
+
+if (showAllCollectionsBtn) {
+
+    showAllCollectionsBtn.addEventListener(
+        "click",
+        function () {
+
+            loadCollections();
+
+        }
+    );
+}
+
+
+// Load collections page
+if (
+    window.location.pathname ===
+    "/collections.html"
+) {
 
     if (!getToken()) {
 
-        window.location.href = "/login.html";
+        window.location.href =
+            "/login.html";
 
     } else {
 
         loadCollections();
+    }
+}
+// ============================================================
+// LOAD COLLECTIONS INTO NOTES DROPDOWN
+// ============================================================
+
+async function loadCollectionsForNotes() {
+
+    const select =
+        document.getElementById("noteCollectionId");
+
+    if (!select) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await authenticatedFetch(
+                "/api/collections"
+            );
+
+        if (!response) {
+            return;
+        }
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load collections."
+            );
+        }
+
+        const collections =
+            await response.json();
+
+
+        // Keep "No Collection"
+        select.innerHTML = `
+            <option value="">
+                No Collection
+            </option>
+        `;
+
+
+        collections.forEach(
+            function (collection) {
+
+                const option =
+                    document.createElement("option");
+
+                option.value =
+                    collection.id;
+
+                option.textContent =
+                    collection.name;
+
+                select.appendChild(option);
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Loading collections for notes failed:",
+            error
+        );
+
+        select.innerHTML = `
+            <option value="">
+                Unable to load collections
+            </option>
+        `;
+    }
+}
+
+// =====================================================
+// DOCUMENTS
+// =====================================================
+
+async function loadDocuments() {
+
+    const container =
+        document.getElementById("documentsContainer");
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML =
+        "<p>Loading documents...</p>";
+
+    try {
+
+        const response =
+            await authenticatedFetch("/api/documents");
+
+        if (!response) {
+            return;
+        }
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load documents."
+            );
+        }
+
+        const documents =
+            await response.json();
+
+        displayDocuments(documents);
+
+    } catch (error) {
+
+        console.error(
+            "Loading documents failed:",
+            error
+        );
+
+        container.innerHTML =
+            `<p>${escapeHtml(error.message)}</p>`;
+    }
+}
+
+
+function displayDocuments(documents) {
+
+    const container =
+        document.getElementById("documentsContainer");
+
+    if (!container) {
+        return;
+    }
+
+    if (!documents || documents.length === 0) {
+
+        container.innerHTML =
+            "<p>No documents found.</p>";
+
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    documents.forEach(function (document) {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "note-card";
+
+
+        card.innerHTML = `
+
+            <div>
+
+                <h3>
+                    📄 ${escapeHtml(
+                        document.fileName ||
+                        document.filename ||
+                        "Unnamed Document"
+                    )}
+                </h3>
+
+                ${
+                    document.id
+                        ? `<p>Document ID: ${document.id}</p>`
+                        : ""
+                }
+
+            </div>
+
+
+            <div class="note-actions">
+
+                <button
+                    type="button"
+                    onclick="downloadDocument(${document.id})">
+                    ⬇ Download
+                </button>
+
+                <button
+                    type="button"
+                    onclick="deleteDocument(${document.id})">
+                    🗑 Delete
+                </button>
+
+            </div>
+        `;
+
+
+        container.appendChild(card);
+
+    });
+}
+
+
+// =====================================================
+// UPLOAD DOCUMENT
+// =====================================================
+
+async function uploadDocument(event) {
+
+    event.preventDefault();
+
+
+    const fileInput =
+        document.getElementById("documentFile");
+
+    const message =
+        document.getElementById("documentMessage");
+
+
+    if (!fileInput || !fileInput.files.length) {
+
+        message.textContent =
+            "Please select a document.";
+
+        return;
+    }
+
+
+    const file =
+        fileInput.files[0];
+
+
+    const formData =
+        new FormData();
+
+    formData.append("file", file);
+
+
+    try {
+
+        message.textContent =
+            "Uploading document...";
+
+
+        const token =
+            getToken();
+
+
+        const response =
+            await fetch("/api/documents", {
+
+                method: "POST",
+
+                headers: {
+
+                    "Authorization":
+                        "Bearer " + token
+
+                },
+
+                body: formData
+
+            });
+
+
+        if (!response.ok) {
+
+            const errorText =
+                await response.text();
+
+            throw new Error(
+                errorText ||
+                "Document upload failed."
+            );
+        }
+
+
+        message.textContent =
+            "Document uploaded successfully.";
+
+
+        fileInput.value = "";
+
+
+        await loadDocuments();
+
+
+    } catch (error) {
+
+        console.error(
+            "Document upload failed:",
+            error
+        );
+
+        message.textContent =
+            error.message ||
+            "Document upload failed.";
+    }
+}
+
+
+// =====================================================
+// SEARCH DOCUMENTS
+// =====================================================
+
+async function searchDocuments() {
+
+    const searchInput =
+        document.getElementById("documentSearch");
+
+    if (!searchInput) {
+        return;
+    }
+
+
+    const keyword =
+        searchInput.value.trim();
+
+
+    if (keyword === "") {
+
+        await loadDocuments();
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await authenticatedFetch(
+                "/api/documents/search?keyword=" +
+                encodeURIComponent(keyword)
+            );
+
+
+        if (!response) {
+            return;
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to search documents."
+            );
+        }
+
+
+        const documents =
+            await response.json();
+
+
+        displayDocuments(documents);
+
+
+    } catch (error) {
+
+        console.error(
+            "Document search failed:",
+            error
+        );
+
+        const container =
+            document.getElementById(
+                "documentsContainer"
+            );
+
+        container.innerHTML =
+            `<p>${escapeHtml(error.message)}</p>`;
+    }
+}
+
+
+// =====================================================
+// DOWNLOAD DOCUMENT
+// =====================================================
+
+async function downloadDocument(id) {
+
+    try {
+
+        const token =
+            getToken();
+
+
+        const response =
+            await fetch(
+                "/api/documents/" + id + "/download",
+                {
+
+                    method: "GET",
+
+                    headers: {
+
+                        "Authorization":
+                            "Bearer " + token
+
+                    }
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to download document."
+            );
+        }
+
+
+        const blob =
+            await response.blob();
+
+
+        const url =
+            window.URL.createObjectURL(blob);
+
+
+        const link =
+            document.createElement("a");
+
+
+        link.href = url;
+
+
+        /*
+         * Try to get filename from
+         * Content-Disposition header.
+         */
+
+        const disposition =
+            response.headers.get(
+                "Content-Disposition"
+            );
+
+
+        let filename =
+            "document";
+
+
+        if (disposition) {
+
+            const match =
+                disposition.match(
+                    /filename="?([^"]+)"?/
+                );
+
+
+            if (match && match[1]) {
+
+                filename =
+                    match[1];
+
+            }
+        }
+
+
+        link.download =
+            filename;
+
+
+        document.body.appendChild(link);
+
+
+        link.click();
+
+
+        link.remove();
+
+
+        window.URL.revokeObjectURL(url);
+
+
+    } catch (error) {
+
+        console.error(
+            "Document download failed:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to download document."
+        );
+    }
+}
+
+
+// =====================================================
+// DELETE DOCUMENT
+// =====================================================
+
+async function deleteDocument(id) {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete this document?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await authenticatedFetch(
+                "/api/documents/" + id,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        if (!response) {
+            return;
+        }
+
+
+        if (!response.ok) {
+
+            const errorText =
+                await response.text();
+
+            throw new Error(
+                errorText ||
+                "Unable to delete document."
+            );
+        }
+
+
+        await loadDocuments();
+
+
+    } catch (error) {
+
+        console.error(
+            "Document deletion failed:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to delete document."
+        );
+    }
+}
+
+
+// =====================================================
+// DOCUMENT PAGE INITIALIZATION
+// =====================================================
+
+if (
+    window.location.pathname ===
+    "/documents.html"
+) {
+
+    if (!getToken()) {
+
+        window.location.href =
+            "/login.html";
+
+    } else {
+
+        loadDocuments();
+
+
+        const uploadForm =
+            document.getElementById(
+                "documentUploadForm"
+            );
+
+
+        if (uploadForm) {
+
+            uploadForm.addEventListener(
+                "submit",
+                uploadDocument
+            );
+
+        }
+
+
+        const searchButton =
+            document.getElementById(
+                "searchDocumentsBtn"
+            );
+
+
+        if (searchButton) {
+
+            searchButton.addEventListener(
+                "click",
+                searchDocuments
+            );
+
+        }
+
+
+        const showAllButton =
+            document.getElementById(
+                "showAllDocumentsBtn"
+            );
+
+
+        if (showAllButton) {
+
+            showAllButton.addEventListener(
+                "click",
+                loadDocuments
+            );
+
+        }
+
     }
 }

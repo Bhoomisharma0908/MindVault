@@ -2,198 +2,104 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <title>Documents - MindVault AI</title>
 
-    <title>Documents | MindVault AI</title>
-
-    <link rel="stylesheet"
-          href="style.css">
-
+    <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
 
-<div class="dashboard">
+<div class="dashboard-container">
 
-    <aside class="sidebar">
+    <!-- HEADER -->
+    <header class="dashboard-header">
 
-        <h2>MindVault AI</h2>
-
-        <nav>
-
-            <a href="dashboard.html">🏠 Dashboard</a>
-
-            <a href="notes.html">📝 My Notes</a>
-
-            <a href="documents.html">📄 Documents</a>
-
-            <a href="ai-chat.html">🤖 AI Chat</a>
-
-            <a href="#">📚 Collections</a>
-
-            <a href="#">⚙ Settings</a>
-
-        </nav>
-
-    </aside>
-
-    <main class="documents-content">
-
-        <div class="documents-header">
-
-            <h1>Documents</h1>
-
-            <a href="upload-document.html">
-
-                <button class="upload-btn">
-
-                    + Upload Document
-
-                </button>
-
-            </a>
-
+        <div>
+            <h1>📄 My Documents</h1>
+            <p>Upload and manage your important documents.</p>
         </div>
 
-        <div class="document-search">
+        <div>
+            <a href="/dashboard.html" class="btn">
+                ← Dashboard
+            </a>
+
+            <button id="logoutBtn" class="btn" type="button">
+                Logout
+            </button>
+        </div>
+
+    </header>
+
+
+    <!-- UPLOAD DOCUMENT -->
+    <section class="note-create-card">
+
+        <h2>Upload New Document</h2>
+
+        <form id="documentUploadForm">
+
+            <input
+                    type="file"
+                    id="documentFile"
+                    required
+            >
+
+            <br><br>
+
+            <button type="submit">
+                📤 Upload Document
+            </button>
+
+        </form>
+
+        <p id="documentMessage"></p>
+
+    </section>
+
+
+    <!-- SEARCH -->
+    <section class="notes-section">
+
+        <div class="search-container">
 
             <input
                     type="text"
-                    placeholder="Search documents...">
+                    id="documentSearch"
+                    placeholder="Search documents..."
+            >
+
+            <button
+                    type="button"
+                    id="searchDocumentsBtn">
+                🔍 Search
+            </button>
+
+            <button
+                    type="button"
+                    id="showAllDocumentsBtn">
+                Show All
+            </button>
 
         </div>
 
-        <div class="document-grid">
 
-            <div class="document-card">
+        <!-- DOCUMENT LIST -->
+        <div id="documentsContainer">
 
-                <h2>📄 Spring Boot Guide.pdf</h2>
-
-                <p>
-
-                    Size : 2.5 MB
-
-                </p>
-
-                <p>
-
-                    Uploaded : Today
-
-                </p>
-
-                <div class="document-buttons">
-
-                    <button>
-
-                        View
-
-                    </button>
-
-                    <button>
-
-                        AI Summary
-
-                    </button>
-
-                    <button>
-
-                        Delete
-
-                    </button>
-
-                </div>
-
-            </div>
-
-            <div class="document-card">
-
-                <h2>📄 Machine Learning.pdf</h2>
-
-                <p>
-
-                    Size : 5.8 MB
-
-                </p>
-
-                <p>
-
-                    Uploaded : Yesterday
-
-                </p>
-
-                <div class="document-buttons">
-
-                    <button>
-
-                        View
-
-                    </button>
-
-                    <button>
-
-                        AI Summary
-
-                    </button>
-
-                    <button>
-
-                        Delete
-
-                    </button>
-
-                </div>
-
-            </div>
-
-            <div class="document-card">
-
-                <h2>📄 DSA Notes.pdf</h2>
-
-                <p>
-
-                    Size : 1.8 MB
-
-                </p>
-
-                <p>
-
-                    Uploaded : 3 Days Ago
-
-                </p>
-
-                <div class="document-buttons">
-
-                    <button>
-
-                        View
-
-                    </button>
-
-                    <button>
-
-                        AI Summary
-
-                    </button>
-
-                    <button>
-
-                        Delete
-
-                    </button>
-
-                </div>
-
-            </div>
+            <p>Loading documents...</p>
 
         </div>
 
-    </main>
+    </section>
 
 </div>
+
+
+<script src="/script.js"></script>
 
 </body>
 

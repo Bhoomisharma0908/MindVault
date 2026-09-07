@@ -23,19 +23,36 @@ public class CollectionServiceImpl implements CollectionService {
     @Autowired
     private UserRepository userRepository;
 
-    // Get logged-in user's email
     private String getLoggedInUserEmail() {
 
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
 
+        if (authentication == null ||
+                !authentication.isAuthenticated() ||
+                authentication.getName() == null) {
+
+            throw new RuntimeException("User is not authenticated");
+        }
+
         return authentication.getName();
     }
 
-    // Create Collection
+    // =========================
+    // CREATE COLLECTION
+    // =========================
+
     @Override
     public CollectionResponseDTO createCollection(
             CollectionRequestDTO requestDTO) {
+
+        if (requestDTO == null ||
+                requestDTO.getName() == null ||
+                requestDTO.getName().trim().isEmpty()) {
+
+            throw new RuntimeException(
+                    "Collection name is required");
+        }
 
         String email = getLoggedInUserEmail();
 
@@ -43,10 +60,23 @@ public class CollectionServiceImpl implements CollectionService {
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
 
+        String name = requestDTO.getName().trim();
+
+        // Prevent duplicate collection names
+        if (collectionRepository.existsByNameAndUserEmail(
+                name,
+                email)) {
+
+            throw new RuntimeException(
+                    "A collection with this name already exists");
+        }
+
         Collection collection = new Collection();
 
-        collection.setName(requestDTO.getName());
-        collection.setDescription(requestDTO.getDescription());
+        collection.setName(name);
+        collection.setDescription(
+                requestDTO.getDescription()
+        );
         collection.setUser(user);
 
         Collection savedCollection =
@@ -55,7 +85,10 @@ public class CollectionServiceImpl implements CollectionService {
         return convertToResponse(savedCollection);
     }
 
-    // Get all collections of logged-in user
+    // =========================
+    // GET ALL COLLECTIONS
+    // =========================
+
     @Override
     public List<CollectionResponseDTO> getAllCollections() {
 
@@ -69,13 +102,18 @@ public class CollectionServiceImpl implements CollectionService {
 
         for (Collection collection : collections) {
 
-            response.add(convertToResponse(collection));
+            response.add(
+                    convertToResponse(collection)
+            );
         }
 
         return response;
     }
 
-    // Get collection by ID
+    // =========================
+    // GET COLLECTION BY ID
+    // =========================
+
     @Override
     public CollectionResponseDTO getCollectionById(Long id) {
 
@@ -87,21 +125,27 @@ public class CollectionServiceImpl implements CollectionService {
                                 new RuntimeException(
                                         "Collection not found"));
 
-        // Security check
-        if (!collection.getUser().getEmail().equals(email)) {
-
-            throw new RuntimeException(
-                    "You are not allowed to access this collection");
-        }
+        verifyOwnership(collection, email);
 
         return convertToResponse(collection);
     }
 
-    // Update Collection
+    // =========================
+    // UPDATE COLLECTION
+    // =========================
+
     @Override
     public CollectionResponseDTO updateCollection(
             Long id,
             CollectionRequestDTO requestDTO) {
+
+        if (requestDTO == null ||
+                requestDTO.getName() == null ||
+                requestDTO.getName().trim().isEmpty()) {
+
+            throw new RuntimeException(
+                    "Collection name is required");
+        }
 
         String email = getLoggedInUserEmail();
 
@@ -111,15 +155,15 @@ public class CollectionServiceImpl implements CollectionService {
                                 new RuntimeException(
                                         "Collection not found"));
 
-        // Security check
-        if (!collection.getUser().getEmail().equals(email)) {
+        verifyOwnership(collection, email);
 
-            throw new RuntimeException(
-                    "You are not allowed to update this collection");
-        }
+        collection.setName(
+                requestDTO.getName().trim()
+        );
 
-        collection.setName(requestDTO.getName());
-        collection.setDescription(requestDTO.getDescription());
+        collection.setDescription(
+                requestDTO.getDescription()
+        );
 
         Collection updatedCollection =
                 collectionRepository.save(collection);
@@ -127,7 +171,10 @@ public class CollectionServiceImpl implements CollectionService {
         return convertToResponse(updatedCollection);
     }
 
-    // Delete Collection
+    // =========================
+    // DELETE COLLECTION
+    // =========================
+
     @Override
     public void deleteCollection(Long id) {
 
@@ -139,17 +186,15 @@ public class CollectionServiceImpl implements CollectionService {
                                 new RuntimeException(
                                         "Collection not found"));
 
-        // Security check
-        if (!collection.getUser().getEmail().equals(email)) {
-
-            throw new RuntimeException(
-                    "You are not allowed to delete this collection");
-        }
+        verifyOwnership(collection, email);
 
         collectionRepository.delete(collection);
     }
 
-    // Search Collections
+    // =========================
+    // SEARCH COLLECTIONS
+    // =========================
+
     @Override
     public List<CollectionResponseDTO> searchCollections(
             String keyword) {
@@ -168,13 +213,37 @@ public class CollectionServiceImpl implements CollectionService {
 
         for (Collection collection : collections) {
 
-            response.add(convertToResponse(collection));
+            response.add(
+                    convertToResponse(collection)
+            );
         }
 
         return response;
     }
 
-    // Convert Entity → Response DTO
+    // =========================
+    // SECURITY CHECK
+    // =========================
+
+    private void verifyOwnership(
+            Collection collection,
+            String email) {
+
+        if (collection.getUser() == null ||
+                collection.getUser().getEmail() == null ||
+                !collection.getUser()
+                        .getEmail()
+                        .equals(email)) {
+
+            throw new RuntimeException(
+                    "You are not allowed to access this collection");
+        }
+    }
+
+    // =========================
+    // ENTITY → DTO
+    // =========================
+
     private CollectionResponseDTO convertToResponse(
             Collection collection) {
 

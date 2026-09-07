@@ -5,46 +5,78 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Notes - MindVault AI</title>
 
-    <link rel="stylesheet" href="/style.css">
+    <link
+            rel="stylesheet"
+            href="/style.css"
+    >
 
 </head>
+
 
 <body>
 
 <div class="dashboard-container">
 
+
+    <!-- ============================================== -->
+    <!-- HEADER -->
+    <!-- ============================================== -->
+
     <header class="dashboard-header">
 
         <div>
-            <h1>My Notes</h1>
-            <p>Capture and organize your knowledge.</p>
+
+            <h1>📝 My Notes</h1>
+
+            <p>
+                Capture and organize your knowledge.
+            </p>
+
         </div>
 
+
         <div>
-            <a href="/dashboard.html" class="btn">
+
+            <a
+                    href="/dashboard.html"
+                    class="btn"
+            >
                 ← Dashboard
             </a>
 
-            <button id="logoutBtn" class="btn">
+
+            <button
+                    id="logoutBtn"
+                    class="btn"
+                    type="button"
+            >
                 Logout
             </button>
+
         </div>
 
     </header>
 
 
+
+    <!-- ============================================== -->
     <!-- CREATE NOTE -->
+    <!-- ============================================== -->
 
     <section class="note-create-card">
 
         <h2>Create New Note</h2>
 
+
         <form id="noteForm">
+
 
             <input
                     type="text"
@@ -53,6 +85,7 @@
                     required
             >
 
+
             <textarea
                     id="noteContent"
                     placeholder="Write your note..."
@@ -60,11 +93,13 @@
                     required
             ></textarea>
 
+
             <input
                     type="text"
                     id="noteCategory"
                     placeholder="Category e.g. Java, Personal, DSA"
             >
+
 
             <input
                     type="text"
@@ -72,28 +107,52 @@
                     placeholder="Tags e.g. java,oop,backend"
             >
 
-            <input
-                    type="number"
+
+            <!-- COLLECTION DROPDOWN -->
+
+            <label for="noteCollectionId">
+                Collection
+            </label>
+
+
+            <select
                     id="noteCollectionId"
-                    placeholder="Collection ID (optional)"
             >
 
-            <button type="submit">
+                <option value="">
+                    No Collection
+                </option>
+
+            </select>
+
+
+            <button
+                    type="submit"
+            >
                 + Create Note
             </button>
 
+
         </form>
 
-        <p id="noteMessage"></p>
+
+        <p
+                id="noteMessage"
+        ></p>
 
     </section>
 
 
+
+    <!-- ============================================== -->
     <!-- SEARCH -->
+    <!-- ============================================== -->
 
     <section class="notes-section">
 
+
         <div class="search-container">
+
 
             <input
                     type="text"
@@ -101,31 +160,49 @@
                     placeholder="Search notes..."
             >
 
-            <button id="searchNotesBtn">
-                Search
+
+            <button
+                    type="button"
+                    id="searchNotesBtn"
+            >
+                🔍 Search
             </button>
 
-            <button id="showAllNotesBtn">
+
+            <button
+                    type="button"
+                    id="showAllNotesBtn"
+            >
                 Show All
             </button>
 
+
         </div>
 
 
+        <!-- ========================================== -->
         <!-- NOTES -->
+        <!-- ========================================== -->
 
-        <div id="notesContainer">
+        <div
+                id="notesContainer"
+        >
 
-            <p>Loading notes...</p>
+            <p>
+                Loading notes...
+            </p>
 
         </div>
+
 
     </section>
+
 
 </div>
 
 
 <script src="/script.js"></script>
+
 
 </body>
 

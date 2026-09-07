@@ -1,33 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Collections - MindVault AI</title>
-    <link rel="stylesheet" href="/style.css">
+
+    <link
+            rel="stylesheet"
+            href="/style.css"
+    >
+
 </head>
+
 
 <body>
 
 <div class="dashboard-container">
 
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
     <header class="dashboard-header">
-        <div>
-            <h1>📁 My Collections</h1>
-            <p>Organize your notes into collections.</p>
-        </div>
 
         <div>
-            <a href="/dashboard.html" class="btn">← Dashboard</a>
-            <button id="logoutBtn" class="btn">Logout</button>
+
+            <h1>📁 My Collections</h1>
+
+            <p>
+                Organize your notes into collections.
+            </p>
+
         </div>
+
+
+        <div>
+
+            <a
+                    href="/dashboard.html"
+                    class="btn"
+            >
+                ← Dashboard
+            </a>
+
+
+            <button
+                    id="logoutBtn"
+                    class="btn"
+                    type="button"
+            >
+                Logout
+            </button>
+
+        </div>
+
     </header>
+
+
+
+    <!-- ================================================= -->
+    <!-- CREATE COLLECTION -->
+    <!-- ================================================= -->
 
     <section class="note-create-card">
 
-        <h2>Create Collection</h2>
+        <h2>Create New Collection</h2>
+
 
         <form id="collectionForm">
+
 
             <input
                     type="text"
@@ -36,35 +85,94 @@
                     required
             >
 
+
             <textarea
                     id="collectionDescription"
                     placeholder="Collection description"
                     rows="4"
             ></textarea>
 
-            <button type="submit">
+
+            <button
+                    type="submit"
+            >
                 + Create Collection
             </button>
 
+
         </form>
 
-        <p id="collectionMessage"></p>
+
+        <p
+                id="collectionMessage"
+        ></p>
 
     </section>
 
+
+
+    <!-- ================================================= -->
+    <!-- SEARCH COLLECTIONS -->
+    <!-- ================================================= -->
+
     <section class="notes-section">
 
-        <h2>My Collections</h2>
+        <div class="search-container">
 
-        <div id="collectionsContainer">
-            <p>Loading collections...</p>
+
+            <input
+                    type="text"
+                    id="collectionSearch"
+                    placeholder="Search collections..."
+            >
+
+
+            <button
+                    type="button"
+                    id="searchCollectionsBtn"
+            >
+                🔍 Search
+            </button>
+
+
+            <button
+                    type="button"
+                    id="showAllCollectionsBtn"
+            >
+                Show All
+            </button>
+
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- COLLECTION LIST -->
+        <!-- ================================================= -->
+
+        <div
+                id="collectionsContainer"
+        >
+
+            <p>
+                Loading collections...
+            </p>
+
         </div>
 
     </section>
 
+
 </div>
+
+
+<!-- ===================================================== -->
+<!-- JAVASCRIPT -->
+<!-- ===================================================== -->
 
 <script src="/script.js"></script>
 
+
 </body>
+
 </html>
