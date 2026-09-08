@@ -19,7 +19,7 @@
 
         <div>
             <h1>📄 My Documents</h1>
-            <p>Upload and manage your important documents.</p>
+            <p>Upload and manage your documents.</p>
         </div>
 
         <div>
@@ -27,7 +27,10 @@
                 ← Dashboard
             </a>
 
-            <button id="logoutBtn" class="btn" type="button">
+            <button
+                    id="logoutBtn"
+                    class="btn"
+                    type="button">
                 Logout
             </button>
         </div>
@@ -42,11 +45,29 @@
 
         <form id="documentUploadForm">
 
+            <label for="documentFile">
+                Select Document
+            </label>
+
             <input
                     type="file"
                     id="documentFile"
                     required
             >
+
+
+            <label for="documentCollectionId">
+                Collection
+            </label>
+
+            <select id="documentCollectionId">
+
+                <option value="">
+                    No Collection
+                </option>
+
+            </select>
+
 
             <br><br>
 
@@ -61,7 +82,7 @@
     </section>
 
 
-    <!-- SEARCH -->
+    <!-- SEARCH DOCUMENTS -->
     <section class="notes-section">
 
         <div class="search-container">
@@ -87,7 +108,7 @@
         </div>
 
 
-        <!-- DOCUMENT LIST -->
+        <!-- DOCUMENTS -->
         <div id="documentsContainer">
 
             <p>Loading documents...</p>
